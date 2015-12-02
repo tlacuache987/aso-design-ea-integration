@@ -15,7 +15,7 @@ public class JsonSchemaProperties {
 		this.properties = new ArrayList<JsonSchemaProperty>();
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("\n\t\tJsonSchemaProperties(\n");
@@ -29,5 +29,5 @@ public class JsonSchemaProperties {
 				append("\t");
 
 		return sb.toString();
-	}
+	}*/
 }

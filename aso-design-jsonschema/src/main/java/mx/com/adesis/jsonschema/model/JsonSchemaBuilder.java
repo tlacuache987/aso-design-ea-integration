@@ -178,6 +178,25 @@ public class JsonSchemaBuilder {
 							.setValue(jsonSchemaItems);
 				}
 
+				if (propertyMap.containsKey("minItems")) {
+					jsonProperty.getDefinition().setMinItems(
+							new JsonSchemaKeyValuePair<Integer>());
+					jsonProperty.getDefinition().getMinItems().setKey("minItems");
+
+					jsonProperty.getDefinition().getMinItems().setValue(
+							Integer.valueOf(String.valueOf((Long) propertyMap
+									.get("minItems"))));
+				}
+
+				if (propertyMap.containsKey("uniqueItems")) {
+					jsonProperty.getDefinition().setUniqueItems(
+							new JsonSchemaKeyValuePair<Boolean>());
+					jsonProperty.getDefinition().getUniqueItems().setKey("uniqueItems");
+
+					jsonProperty.getDefinition().getUniqueItems()
+							.setValue((Boolean) propertyMap.get("uniqueItems"));
+				}
+
 				break;
 			}
 

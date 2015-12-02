@@ -18,8 +18,8 @@ public class JsonSchemaPropertyDefinition {
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> format; //ya
 	private @Setter(AccessLevel.PACKAGE) List<JsonSchemaKeyValuePair<String>> oneOfProperties;
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<JsonSchemaItems> items; //ya
-	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Integer> minItems;
-	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Boolean> uniqueItems;
+	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Integer> minItems; //ya
+	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Boolean> uniqueItems; //ya
 
 	public boolean hasType() {
 		return type != null ? true : false;
