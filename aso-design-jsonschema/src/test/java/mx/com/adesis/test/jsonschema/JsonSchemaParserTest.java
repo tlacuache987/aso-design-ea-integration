@@ -1,9 +1,9 @@
 package mx.com.adesis.test.jsonschema;
 
 import lombok.extern.slf4j.Slf4j;
-import mx.com.adesis.jsonschema.JsonSchema;
-import mx.com.adesis.jsonschema.JsonSchemaBuilder;
-import mx.com.adesis.jsonschema.JsonSchemaProperty;
+import mx.com.adesis.jsonschema.model.JsonSchema;
+import mx.com.adesis.jsonschema.model.JsonSchemaBuilder;
+import mx.com.adesis.jsonschema.model.JsonSchemaProperty;
 
 import org.junit.Test;
 
@@ -35,7 +35,8 @@ public class JsonSchemaParserTest {
 			+ "			\"type\": \"array\","
 			+ "			\"minItems\": 1,"
 			+ "			\"items\": {"
-			+ "				\"type\": \"string\""
+			+ "				\"type\": \"string\","
+			+ "				\"description\": \"Descripción del Item\""
 			+ "			},"
 			+ "			\"uniqueItems\": true"
 			+ "		},"
@@ -53,34 +54,29 @@ public class JsonSchemaParserTest {
 		log.info("inicia jsonSchemaParserTest --------------------------------");
 		JsonSchema jsonSchema = new JsonSchemaBuilder().build(jsonSchemaAsString);
 
-		System.out.println(jsonSchema);
-
-		System.out.println();
-		System.out.println();
-		System.out.println("-------------------------------");
-		System.out.println();
-		System.out.println();
+		log.info("\n{}", jsonSchema);
 
 		if (jsonSchema.hasSchema())
-			System.out.println(jsonSchema.getSchema().getKey() + " = "
+			log.info("{}", jsonSchema.getSchema().getKey() + " = "
 					+ jsonSchema.getSchema().getValue());
 
 		if (jsonSchema.hasType())
-			System.out.println(jsonSchema.getType().getKey() + " = "
+			log.info("{}", jsonSchema.getType().getKey() + " = "
 					+ jsonSchema.getType().getValue());
 
 		if (jsonSchema.hasId())
-			System.out.println(jsonSchema.getId().getKey() + " = " + jsonSchema.getId().getValue());
+			log.info("{}", jsonSchema.getId().getKey() + " = " + jsonSchema.getId().getValue());
 
 		if (jsonSchema.hasDescription())
-			System.out.println(jsonSchema.getDescription().getKey() + " = "
+			log.info("{}", jsonSchema.getDescription().getKey() + " = "
 					+ jsonSchema.getDescription().getValue());
 
 		if (jsonSchema.hasProperties()) {
-			System.out.println("Properties");
+			log.info("{}", "Properties");
 
 			for (JsonSchemaProperty jsp : jsonSchema.getProperties().getValue().getProperties()) {
-				System.out.println(jsp.getName() + "\n\tdefinition: " + jsp.getDefinition());
+				log.info("{}", jsp.getName());
+				log.info("{}", "\tdefinition: " + jsp.getDefinition());
 			}
 		}
 

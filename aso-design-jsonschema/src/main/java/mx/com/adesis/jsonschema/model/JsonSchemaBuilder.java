@@ -1,4 +1,4 @@
-package mx.com.adesis.jsonschema;
+package mx.com.adesis.jsonschema.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,16 +19,16 @@ public class JsonSchemaBuilder {
 		jsonSchema = new JsonSchema();
 
 		@SuppressWarnings("unchecked")
-		HashMap<String, Object> map = (HashMap<String, Object>) j.getValue();
+		final HashMap<String, Object> map = (HashMap<String, Object>) j.getValue();
 
-		processMap(map);
+		this.processMap(map);
 
 		return jsonSchema;
 	}
 
 	@SuppressWarnings("unchecked")
 	private void processMap(HashMap<String, Object> map) {
-		Set<String> keySet = map.keySet();
+		final Set<String> keySet = map.keySet();
 
 		for (String key : keySet) {
 
@@ -38,7 +38,6 @@ public class JsonSchemaBuilder {
 
 			switch (jsonSchemaType) {
 			case STRING_VALUE:
-				//System.out.print(" : " + map.get(key));
 
 				if (key.equalsIgnoreCase("$schema")) {
 					jsonSchema.setSchema(new JsonSchemaKeyValuePair<String>());
@@ -69,8 +68,8 @@ public class JsonSchemaBuilder {
 				}
 
 				break;
+
 			case OBJECT_VALUE:
-				//System.out.println(" : ");
 
 				if (key.equalsIgnoreCase("properties")) {
 					jsonSchema.setProperties(new JsonSchemaKeyValuePair<JsonSchemaProperties>());
@@ -91,7 +90,7 @@ public class JsonSchemaBuilder {
 
 		final JsonSchemaProperties jsonProperties = new JsonSchemaProperties();
 
-		Set<String> keySet = map.keySet();
+		final Set<String> keySet = map.keySet();
 
 		for (String key : keySet) {
 
@@ -107,7 +106,7 @@ public class JsonSchemaBuilder {
 			case OBJECT_VALUE:
 
 				@SuppressWarnings("unchecked")
-				HashMap<String, Object> propertyMap = (HashMap<String, Object>) map.get(key);
+				final HashMap<String, Object> propertyMap = (HashMap<String, Object>) map.get(key);
 
 				if (propertyMap.containsKey("description")) {
 					jsonProperty.getDefinition().setDescription(
@@ -138,7 +137,7 @@ public class JsonSchemaBuilder {
 					jsonProperty.getDefinition().getEnumType().setKey("enum");
 
 					@SuppressWarnings("unchecked")
-					List<String> enumList = (ArrayList<String>) propertyMap.get("enum");
+					final List<String> enumList = (ArrayList<String>) propertyMap.get("enum");
 
 					jsonProperty.getDefinition().getEnumType()
 							.setValue(enumList);
@@ -185,15 +184,13 @@ public class JsonSchemaBuilder {
 			jsonProperties.getProperties().add(jsonProperty);
 		}
 
-		System.out.println(map);
-
 		return jsonProperties;
 	}
 
 	private JsonSchemaItems processItems(HashMap<String, Object> map) {
 		final JsonSchemaItems jsonItems = new JsonSchemaItems();
 
-		Set<String> keySet = map.keySet();
+		final Set<String> keySet = map.keySet();
 
 		for (String key : keySet) {
 
@@ -201,7 +198,7 @@ public class JsonSchemaBuilder {
 
 			final JsonSchemaItem jsonItem = new JsonSchemaItem(key);
 
-			System.out.println("llave: " + key + " => " + jsonSchemaType);
+			//System.out.println("llaveS: " + key + " => " + jsonSchemaType);
 
 			switch (jsonSchemaType) {
 			case STRING_VALUE:
@@ -213,11 +210,16 @@ public class JsonSchemaBuilder {
 
 					JsonSchemaPropertyType typeValue = obtainPropertyType((String) map.get("type"));
 
-					System.out.println("typevalue: " + typeValue);
-
 					jsonItem.getDefinition().getType()
 							.setValue(typeValue);
-					continue;
+				}
+
+				if (key.equalsIgnoreCase("description")) {
+					jsonItem.getDefinition().setDescription(
+							new JsonSchemaKeyValuePair<String>());
+					jsonItem.getDefinition().getDescription().setKey("description");
+					jsonItem.getDefinition().getDescription()
+							.setValue((String) map.get("description"));
 				}
 
 				break;
@@ -231,8 +233,7 @@ public class JsonSchemaBuilder {
 		return jsonItems;
 	}
 
-	private JsonSchemaPropertyType obtainPropertyType(String string) {
-		System.out.println("STRING: " + string);
+	private static JsonSchemaPropertyType obtainPropertyType(String string) {
 		if (string != null && string.equalsIgnoreCase("object"))
 			return JsonSchemaPropertyType.OBJECT;
 

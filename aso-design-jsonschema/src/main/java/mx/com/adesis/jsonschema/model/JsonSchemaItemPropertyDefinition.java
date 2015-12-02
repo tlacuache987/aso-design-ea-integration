@@ -1,4 +1,4 @@
-package mx.com.adesis.jsonschema;
+package mx.com.adesis.jsonschema.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,16 @@ import lombok.Setter;
 public class JsonSchemaItemPropertyDefinition {
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<JsonSchemaPropertyType> type;
 
+	//BETA PROPERTY
+	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> description;
+
 	public boolean hasType() {
 		return type != null ? true : false;
+	}
+
+	public boolean hasDescription() {
+		return description != null && description.getValue() != null
+				&& !"".equals(description.getValue()) ? true : false;
 	}
 
 	@Override
@@ -24,6 +32,12 @@ public class JsonSchemaItemPropertyDefinition {
 
 		if (hasType()) {
 			sb.append("type = ").append(this.type);
+			attributes.add(sb.toString());
+			sb.setLength(0);
+		}
+
+		if (hasDescription()) {
+			sb.append("description = ").append(this.description);
 			attributes.add(sb.toString());
 			sb.setLength(0);
 		}

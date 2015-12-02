@@ -1,4 +1,4 @@
-package mx.com.adesis.jsonschema;
+package mx.com.adesis.jsonschema.model;
 
 import java.util.List;
 

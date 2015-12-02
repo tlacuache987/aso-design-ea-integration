@@ -1,4 +1,4 @@
-package mx.com.adesis.jsonschema;
+package mx.com.adesis.jsonschema.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,6 @@ public class JsonSchemaPropertyDefinition {
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> description; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> format; //ya
 	private @Setter(AccessLevel.PACKAGE) List<JsonSchemaKeyValuePair<String>> oneOfProperties;
-	//private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<List<JsonSchemaArrayItemDefinition>> items;
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<JsonSchemaItems> items; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Integer> minItems;
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Boolean> uniqueItems;
