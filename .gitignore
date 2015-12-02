@@ -1,0 +1,14 @@
+﻿# Ignores
+\.DS_Store
+\.classpath
+\.project
+\.settings
+\.metadata/
+\.springBeans
+Servers/
+target/
+node_modules/
+*.iml
+*.ipr
+*.iws
+.idea/
