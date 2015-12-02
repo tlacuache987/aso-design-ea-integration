@@ -11,8 +11,20 @@
 		<lombok.version>1.16.2</lombok.version>
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<!-- lombok -->
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<modules>
 		<module>aso-design-integration-api</module>
 		<module>aso-design-jsonschema</module>
+		<module>aso-design-ea-modeler</module>
 	</modules>
 </project>
