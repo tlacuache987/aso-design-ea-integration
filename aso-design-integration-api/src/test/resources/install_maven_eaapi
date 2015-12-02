@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=eaapi-9.0.9.jar -DgroupId=org.sparx -DartifactId=ea-api -Dversion=9.0.9 -Dpackaging=jar
