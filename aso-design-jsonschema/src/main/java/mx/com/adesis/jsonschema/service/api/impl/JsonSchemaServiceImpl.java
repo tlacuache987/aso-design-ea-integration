@@ -19,8 +19,11 @@ public abstract class JsonSchemaServiceImpl implements IJsonSchemaService {
 
 	@Override
 	public IModel getModelFormJsonSchema(String jsonSchemaString) {
+		System.out.println("JsonSchemaServiceImpl: " + this.toString());
 
 		final JsonSchemaBuilder jsonSchemaBuilder = getJsonSchemaBuilder();
+
+		System.out.println("jsonSchemaBuilder: " + jsonSchemaBuilder.toString());
 
 		final JsonSchema jsonSchema = jsonSchemaBuilder.build(jsonSchemaString);
 
