@@ -4,18 +4,18 @@ public enum JsonSchemaPropertyType {
 	ARRAY("array"), BOOLEAN("boolean"), INTEGER("integer"), NUMBER("number"), NULL("null"), OBJECT(
 			"object"), STRING("string");
 
-	private String type;
+	private String enumValue;
 
-	private JsonSchemaPropertyType(String type) {
-		this.type = type;
+	private JsonSchemaPropertyType(String enumValue) {
+		this.enumValue = enumValue;
 	}
 
-	public String getType() {
-		return type;
+	public String getEnumValue() {
+		return enumValue;
 	}
 
 	@Override
 	public String toString() {
-		return this.type;
+		return this.enumValue;
 	}
 }

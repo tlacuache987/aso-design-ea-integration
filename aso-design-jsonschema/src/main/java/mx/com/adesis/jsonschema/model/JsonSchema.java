@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 public class JsonSchema {
-	private JsonSchemaKeyValuePair<String> schema;
-	private JsonSchemaKeyValuePair<String> type;
-	private JsonSchemaKeyValuePair<String> id;
-	private JsonSchemaKeyValuePair<String> description;
-	private JsonSchemaKeyValuePair<JsonSchemaProperties> properties;
+	private JsonSchemaKeyValuePair<String> schema; //ya
+	private JsonSchemaKeyValuePair<String> type; //ya
+	private JsonSchemaKeyValuePair<String> id; //ya
+	private JsonSchemaKeyValuePair<String> description; //ya
+	private JsonSchemaKeyValuePair<JsonSchemaProperties> properties; //ya
 	private JsonSchemaKeyValuePair<List<String>> required;
 	private JsonSchemaKeyValuePair<JsonSchemaDependencies> dependencies;
 

@@ -3,6 +3,7 @@ package mx.com.adesis.test.jsonschema;
 import lombok.extern.slf4j.Slf4j;
 import mx.com.adesis.jsonschema.model.JsonSchema;
 import mx.com.adesis.jsonschema.model.JsonSchemaBuilder;
+import mx.com.adesis.jsonschema.model.JsonSchemaItem;
 import mx.com.adesis.jsonschema.model.JsonSchemaProperty;
 
 import org.junit.Test;
@@ -15,6 +16,7 @@ public class JsonSchemaParserTest {
 			+ "	\"$schema\": \"#un-schema\","
 			+ "	\"id\": \"ContractDocument\","
 			+ "	\"description\": \"Contrato de cliente con BBVA\","
+			+ "	\"required\": [ \"documentFile\", \"options\", \"options2\" ],"
 			+ "	\"properties\": {"
 			+ "		\"version\": {"
 			+ "			\"type\": \"string\","
@@ -75,8 +77,37 @@ public class JsonSchemaParserTest {
 			log.info("{}", "Properties");
 
 			for (JsonSchemaProperty jsp : jsonSchema.getProperties().getValue().getProperties()) {
-				log.info("{}", jsp.getName());
-				log.info("{}", "\tdefinition: " + jsp.getDefinition());
+				log.info("\t{}", jsp.getName());
+				log.info("\t{}", "\tdefinition: " + jsp.getDefinition());
+
+				if (jsp.getDefinition().hasType()) {
+					log.info("\t\ttype: {}", jsp.getDefinition().getType().getValue().getEnumValue());
+
+					if (jsp.getDefinition().getType().getValue().getEnumValue().equals("array")) {
+						log.info("\t\tEs array");
+
+						if (jsp.getDefinition().hasItems()) {
+							for (JsonSchemaItem item : jsp.getDefinition().getItems().getValue()
+									.getItems()) {
+
+								if (item.getName().equals("type"))
+									log.info("\t\t\tEl tipo del array es: {}", item.getDefinition()
+											.getType().getValue().getEnumValue());
+							}
+						}
+						continue;
+					}
+				}
+
+				if (jsp.getDefinition().isEnumType()) {
+					if (jsp.getDefinition().getEnumType().getKey().equals("enum")) {
+						log.info("\t\tEs enum");
+
+						for (String l : jsp.getDefinition().getEnumType().getValue()) {
+							log.info("\t\t\tValor del enum: {}", l);
+						}
+					}
+				}
 			}
 		}
 

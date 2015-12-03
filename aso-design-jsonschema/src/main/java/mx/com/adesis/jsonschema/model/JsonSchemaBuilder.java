@@ -117,6 +117,8 @@ public class JsonSchemaBuilder {
 				}
 
 				if (propertyMap.containsKey("type")) {
+					System.out.println("tipooo: " + (String) propertyMap.get("type"));
+
 					jsonProperty.getDefinition().setType(
 							new JsonSchemaKeyValuePair<JsonSchemaPropertyType>());
 					jsonProperty.getDefinition().getType().setKey("type");
@@ -258,6 +260,21 @@ public class JsonSchemaBuilder {
 
 		if (string != null && string.equalsIgnoreCase("string"))
 			return JsonSchemaPropertyType.STRING;
+
+		if (string != null && string.equalsIgnoreCase("null"))
+			return JsonSchemaPropertyType.NULL;
+
+		if (string != null && string.equalsIgnoreCase("number"))
+			return JsonSchemaPropertyType.NUMBER;
+
+		if (string != null && string.equalsIgnoreCase("integer"))
+			return JsonSchemaPropertyType.INTEGER;
+
+		if (string != null && string.equalsIgnoreCase("boolean"))
+			return JsonSchemaPropertyType.BOOLEAN;
+
+		if (string != null && string.equalsIgnoreCase("array"))
+			return JsonSchemaPropertyType.ARRAY;
 
 		return null;
 	}
