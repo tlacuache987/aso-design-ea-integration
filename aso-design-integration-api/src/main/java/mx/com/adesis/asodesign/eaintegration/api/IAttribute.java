@@ -2,6 +2,7 @@ package mx.com.adesis.asodesign.eaintegration.api;
 
 import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
 
+
 public interface IAttribute {
 	
 	String getName();
@@ -20,8 +21,18 @@ public interface IAttribute {
 	
 	void setRequired(Boolean format);
 	
+	Boolean getReadOnly();
+	
+	void setReadOnly(Boolean readOnly);
+	
 	AttributeType getAttributeType();
 	
 	void setAttributeType(AttributeType attributeType);
+	
+	Boolean hasSubtype();
+	
+	String getSubtype();
+	
+	void setSubtype(String subtype);
 	
 }

@@ -7,7 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import mx.com.adesis.asodesign.eaintegration.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
 import mx.com.adesis.asodesign.eamodeler.model.Model;
+import mx.com.adesis.asodesign.eamodeler.model.ModelArrayAttribute;
 import mx.com.adesis.asodesign.eamodeler.model.ModelAttribute;
+import mx.com.adesis.asodesign.eamodeler.model.ModelEnumAttribute;
+import mx.com.adesis.asodesign.eamodeler.model.ModelObjectAttribute;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,22 +30,52 @@ public class EAModelInteractionTest {
 		
 		EAModelInteraction modifyModel = new EAModelInteraction();
 				
-		ModelAttribute modelAttribute = new ModelAttribute();
+		ModelObjectAttribute modelAttribute = new ModelObjectAttribute();
 		modelAttribute.setName("nameJOG2");
 		modelAttribute.setAttributeType(AttributeType.STRING);
 		modelAttribute.setDescription("atributo de nombre");
 		modelAttribute.setRequired(true);
 		
-		ModelAttribute secondModelAttribute = new ModelAttribute();
+		ModelObjectAttribute secondModelAttribute = new ModelObjectAttribute();
 		secondModelAttribute.setName("registrationDate");
 		secondModelAttribute.setAttributeType(AttributeType.STRING);
 		secondModelAttribute.setDescription("atributo de fecha de alta");
 		secondModelAttribute.setFormat("date-time");
-		secondModelAttribute.setRequired(false);
+				
+		ModelArrayAttribute thirdModelAttribute = new ModelArrayAttribute();
+		thirdModelAttribute.setName("observations");
+		thirdModelAttribute.setAttributeType(AttributeType.STRING);
+		thirdModelAttribute.setDescription("atributo de observaciones");
+				
+		ModelObjectAttribute fourthModelAttribute = new ModelObjectAttribute();
+		fourthModelAttribute.setName("contact1");
+		fourthModelAttribute.setSubtype("Contract");
+		fourthModelAttribute.setAttributeType(AttributeType.OBJECT);
+		fourthModelAttribute.setDescription("contrato relacionado");
+		fourthModelAttribute.setRequired(true);
+		fourthModelAttribute.setReadOnly(true);
+				
+		ModelEnumAttribute fifthModelAttribute = new ModelEnumAttribute();
+		fifthModelAttribute.setName("operationType");
+		fifthModelAttribute.setDescription("tipo de operación");
+		List<String> enumValues = new ArrayList<String>();
+		enumValues.add(0, "TRASPASO");
+		enumValues.add(1, "CONSULTA");
+		fifthModelAttribute.setEnumValues(enumValues);
 		
+		ModelArrayAttribute sixthModelAttribute = new ModelArrayAttribute();
+		sixthModelAttribute.setName("participants");
+		sixthModelAttribute.setAttributeType(AttributeType.OBJECT);
+		sixthModelAttribute.setDescription("lista de participantes");
+		sixthModelAttribute.setSubtype("Participant");
+				
 		List<IAttribute> modelAttributeList = new ArrayList<IAttribute>();
 		modelAttributeList.add(modelAttribute);
 		modelAttributeList.add(secondModelAttribute);
+		modelAttributeList.add(thirdModelAttribute);
+		modelAttributeList.add(fourthModelAttribute);
+		modelAttributeList.add(fifthModelAttribute);
+		modelAttributeList.add(sixthModelAttribute);
 		
 		model.setAttributes(modelAttributeList);
 		
