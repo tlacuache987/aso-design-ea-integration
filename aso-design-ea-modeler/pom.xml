@@ -19,14 +19,13 @@
 		<dependency>
 			<groupId>mx.com.adesis</groupId>
 			<artifactId>aso-design-integration-api</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sparx</groupId>
 			<artifactId>ea-api</artifactId>
 			<version>9.0.9</version>
 		</dependency>
-		
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -77,8 +76,8 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-				
+
 	</dependencies>
-	
+
 
 </project>
