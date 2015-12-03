@@ -3,12 +3,11 @@ package mx.com.adesis.asodesign.eamodeler;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
 import mx.com.adesis.asodesign.eaintegration.api.IAttribute;
+import mx.com.adesis.asodesign.eaintegration.api.IModel;
 import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
 import mx.com.adesis.asodesign.eamodeler.model.Model;
 import mx.com.adesis.asodesign.eamodeler.model.ModelArrayAttribute;
-import mx.com.adesis.asodesign.eamodeler.model.ModelAttribute;
 import mx.com.adesis.asodesign.eamodeler.model.ModelEnumAttribute;
 import mx.com.adesis.asodesign.eamodeler.model.ModelObjectAttribute;
 
@@ -22,7 +21,7 @@ public class EAModelInteractionTest {
 	
 	@Test
 	@Ignore
-	public void testCreateAttributeFromNewElement(){
+	public void testCreateNewElements(){
 		
 		Model model = new Model();
 		model.setName("SystemUser");
@@ -79,7 +78,27 @@ public class EAModelInteractionTest {
 		
 		model.setAttributes(modelAttributeList);
 		
-		modifyModel.workOnNewEntity(EAP_FILE_TEMPLATE, model, "{98F20947-C2FF-40bb-B815-7F1972040190}");
+		//Segunda entidad
+		Model secondModel = new Model();
+		secondModel.setName("SystemRole");
+		secondModel.setDescription("Roles del Sistema");
+						
+		ModelObjectAttribute secondModelfirstAttribute = new ModelObjectAttribute();
+		secondModelfirstAttribute.setName("id");
+		secondModelfirstAttribute.setAttributeType(AttributeType.INTEGER);
+		secondModelfirstAttribute.setDescription("clave del rol");
+		secondModelfirstAttribute.setRequired(true);
+		
+		List<IAttribute> secondModelAttributeList = new ArrayList<IAttribute>();
+		secondModelAttributeList.add(secondModelfirstAttribute);
+		
+		secondModel.setAttributes(secondModelAttributeList);
+		
+		List<IModel> models = new ArrayList<IModel>();
+		models.add(model);
+		models.add(secondModel);
+		
+		modifyModel.workOnEntityList(EAP_FILE_TEMPLATE, models, "{98F20947-C2FF-40bb-B815-7F1972040190}");
 		
 	}
 		

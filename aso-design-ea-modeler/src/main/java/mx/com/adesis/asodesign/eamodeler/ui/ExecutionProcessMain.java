@@ -5,7 +5,7 @@ import javax.swing.UIManager;
 /**
  * Driver class for the Java Example application
  */
-public class Main
+public class ExecutionProcessMain
 {
 	//----------------------------------------------------------
 	//                    STATIC VARIABLES

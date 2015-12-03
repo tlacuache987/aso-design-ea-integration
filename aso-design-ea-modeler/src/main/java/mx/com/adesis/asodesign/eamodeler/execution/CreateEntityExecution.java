@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 
 import mx.com.adesis.asodesign.eaintegration.api.IAttribute;
+import mx.com.adesis.asodesign.eaintegration.api.IModel;
 import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
 import mx.com.adesis.asodesign.eamodeler.EAModelInteraction;
 import mx.com.adesis.asodesign.eamodeler.model.Model;
@@ -95,7 +96,27 @@ public class CreateEntityExecution implements IExecution {
 		
 		model.setAttributes(modelAttributeList);
 		
-		modifyModel.workOnNewEntity(projectFileWithPath, model, "{98F20947-C2FF-40bb-B815-7F1972040190}");
+		//Segunda entidad
+		Model secondModel = new Model();
+		secondModel.setName("SystemRole");
+		secondModel.setDescription("Roles del Sistema");
+						
+		ModelObjectAttribute secondModelfirstAttribute = new ModelObjectAttribute();
+		secondModelfirstAttribute.setName("id");
+		secondModelfirstAttribute.setAttributeType(AttributeType.INTEGER);
+		secondModelfirstAttribute.setDescription("clave del rol");
+		secondModelfirstAttribute.setRequired(true);
+		
+		List<IAttribute> secondModelAttributeList = new ArrayList<IAttribute>();
+		secondModelAttributeList.add(secondModelfirstAttribute);
+		
+		secondModel.setAttributes(secondModelAttributeList);
+		
+		List<IModel> models = new ArrayList<IModel>();
+		models.add(model);
+		models.add(secondModel);
+		
+		modifyModel.workOnEntityList(projectFileWithPath, models, "{98F20947-C2FF-40bb-B815-7F1972040190}");
 		
 	}
 	

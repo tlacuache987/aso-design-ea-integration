@@ -25,35 +25,25 @@ import org.sparx.TaggedValue;
 @Slf4j
 public class EAModelInteraction {
 	
-	public void workOnNewEntity(String eapFile, IModel model, String packageGUID){
+	
+	public void workOnEntityList(String eapFile, List<IModel> models, String packageGUID){
 		Repository rep = null;
 		
-		log.debug("iniciando parseo de entidad..." + model.getName());
+		log.debug("iniciando proceso de parseo de entidades ...");
 		try
 		{
 			// Create a repository object - This will create a new instance of EA
 			rep = new Repository();
 			rep.OpenFile(eapFile); 
-			
-			// Nos ubicamos en el paquete base
-			Package thePackage = rep.GetPackageByGuid(packageGUID);
 						
-			if ( thePackage != null && thePackage.GetParentID() != 0 )
-			{
-				Element theElement = workOnNewElement(rep, thePackage, model.getName(), model.getDescription(), "Class", null);
-				
-				//Trabaja con atributos
-				for (IAttribute modelAttribute : model.getAttributes()) {
-					workOnEntityAttributes(rep, modelAttribute, theElement.GetElementID(), thePackage);
-				}
-						
-				
+			for (IModel model : models) {
+				workOnNewEntity(rep, model, packageGUID);
 			}
 			
 		}		
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		finally
 		{
@@ -65,7 +55,37 @@ public class EAModelInteraction {
 				rep.destroy();
 			}
 		}
-		
+	}
+	
+	private void workOnNewEntity(Repository rep, IModel model, String packageGUID) throws Exception{
+				
+		log.debug("iniciando parseo de entidad..." + model.getName());
+		try
+		{
+			// Nos ubicamos en el paquete base
+			Package thePackage = rep.GetPackageByGuid(packageGUID);
+						
+			if ( thePackage != null && thePackage.GetParentID() != 0 )
+			{
+				Element theElement = workOnNewElement(rep, thePackage, model.getName(), model.getDescription(), "Class", null);
+				
+				//Trabaja con atributos
+				for (IAttribute modelAttribute : model.getAttributes()) {
+					workOnEntityAttributes(rep, modelAttribute, theElement.GetElementID(), thePackage);
+				}
+							
+			}
+			else{
+				log.error("Paquete destino con GUID: " + packageGUID + " no se pudo encontrar");
+			}
+			
+		}		
+		catch ( Exception e )
+		{
+			log.error(e.getMessage());
+			throw e;
+		}
+				
 	}
 		
 	private Element workOnNewElement(Repository rep, Package thePackage, String name, String description, String type, String stereotype) throws Exception {
@@ -77,7 +97,7 @@ public class EAModelInteraction {
 		}
 		theElement.Update();
 		
-		log.debug( "Trabajando en el elemento" + theElement.GetName() 
+		log.debug( "Trabajando en el elemento " + theElement.GetName() 
 				+ "' (Type=" + theElement.GetType() + " ID=" 
 				+ theElement.GetElementID() + ")" );
 		
@@ -135,7 +155,7 @@ public class EAModelInteraction {
 		}		
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			log.error(e.getMessage());
 			throw e;
 		}
 	}
