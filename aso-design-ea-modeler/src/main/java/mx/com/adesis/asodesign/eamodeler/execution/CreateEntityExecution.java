@@ -1,27 +1,45 @@
-package mx.com.adesis.asodesign.eamodeler;
+package mx.com.adesis.asodesign.eamodeler.execution;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.DefaultListModel;
 
 import mx.com.adesis.asodesign.eaintegration.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.api.IModel;
 import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
+import mx.com.adesis.asodesign.eamodeler.EAModelInteraction;
 import mx.com.adesis.asodesign.eamodeler.model.Model;
 import mx.com.adesis.asodesign.eamodeler.model.ModelArrayAttribute;
 import mx.com.adesis.asodesign.eamodeler.model.ModelEnumAttribute;
 import mx.com.adesis.asodesign.eamodeler.model.ModelObjectAttribute;
+import mx.com.adesis.asodesign.eamodeler.ui.ExecutionUI;
 
-import org.junit.Ignore;
-import org.junit.Test;
 
-public class EAModelInteractionTest {
+public class CreateEntityExecution implements IExecution {
+
 	
-	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap"; 
-	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
+	public String toString() {
+		return "CreateEntityExecution";
+	}
+
+	public String getDescription() {
+		return "Crea una entidad en EA apartir de un JSON Schema";
+	}
+
+	public void runExample(File projectFile, ExecutionUI uiFrame) {
+		DefaultListModel outputList = uiFrame.getOutputListModel();
+		outputList.addElement("Comienza la ejecución de la implementacion CreateEntityExecution... espere un momento");
+		try {
+			createAttributeFromNewElement(projectFile.getAbsolutePath());
+			outputList.addElement("Ejecución terminada");
+		} catch (Exception e) {
+			outputList.addElement("ERROR: " + e.getMessage());
+		}
+	}
 	
-	@Test
-	@Ignore
-	public void testCreateNewElements(){
+	private void createAttributeFromNewElement(String projectFileWithPath){
 		
 		Model model = new Model();
 		model.setName("SystemUser");
@@ -98,9 +116,12 @@ public class EAModelInteractionTest {
 		models.add(model);
 		models.add(secondModel);
 		
-		modifyModel.workOnEntityList(EAP_FILE_TEMPLATE, models, "{98F20947-C2FF-40bb-B815-7F1972040190}");
+		modifyModel.workOnEntityList(projectFileWithPath, models, "{98F20947-C2FF-40bb-B815-7F1972040190}");
 		
 	}
-		
+	
+	
+	
+	
 	
 }

@@ -13,6 +13,10 @@ import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
 import org.sparx.Attribute;
 import org.sparx.AttributeTag;
 import org.sparx.Collection;
+import org.sparx.Connector;
+import org.sparx.ConnectorConstraint;
+import org.sparx.ConnectorEnd;
+import org.sparx.ConnectorTag;
 import org.sparx.Element;
 import org.sparx.Package;
 import org.sparx.Repository;
@@ -21,42 +25,25 @@ import org.sparx.TaggedValue;
 @Slf4j
 public class EAModelInteraction {
 	
-	public void workOnNewEntity(String eapFile, IModel model, String packageGUID){
+	
+	public void workOnEntityList(String eapFile, List<IModel> models, String packageGUID){
 		Repository rep = null;
 		
-		log.debug("iniciando parseo de entidad..." + model.getName());
+		log.debug("iniciando proceso de parseo de entidades ...");
 		try
 		{
 			// Create a repository object - This will create a new instance of EA
 			rep = new Repository();
 			rep.OpenFile(eapFile); 
-			
-			// Nos ubicamos en el paquete base
-			Package thePackage = rep.GetPackageByGuid(packageGUID);
 						
-			if ( thePackage != null && thePackage.GetParentID() != 0 )
-			{
-				Collection<Element> elements = thePackage.GetElements();
-				Element theElement = elements.AddNew(model.getName(), "Class");
-				theElement.SetNotes(model.getDescription());
-				theElement.Update();
-				
-				log.debug( "Trabajando en el elemento" + theElement.GetName() 
-						+ "' (Type=" + theElement.GetType() + " ID=" 
-						+ theElement.GetElementID() + ")" );
-				
-				//Trabaja con atributos
-				for (IAttribute modelAttribute : model.getAttributes()) {
-					workOnEntityAttributes(rep, modelAttribute, theElement.GetElementID());
-				}
-						
-				
+			for (IModel model : models) {
+				workOnNewEntity(rep, model, packageGUID);
 			}
 			
 		}		
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		finally
 		{
@@ -68,10 +55,56 @@ public class EAModelInteraction {
 				rep.destroy();
 			}
 		}
-		
 	}
 	
-	public void workOnEntityAttributes(Repository rep, IAttribute modelAttribute, int elementID) throws Exception{
+	private void workOnNewEntity(Repository rep, IModel model, String packageGUID) throws Exception{
+				
+		log.debug("iniciando parseo de entidad..." + model.getName());
+		try
+		{
+			// Nos ubicamos en el paquete base
+			Package thePackage = rep.GetPackageByGuid(packageGUID);
+						
+			if ( thePackage != null && thePackage.GetParentID() != 0 )
+			{
+				Element theElement = workOnNewElement(rep, thePackage, model.getName(), model.getDescription(), "Class", null);
+				
+				//Trabaja con atributos
+				for (IAttribute modelAttribute : model.getAttributes()) {
+					workOnEntityAttributes(rep, modelAttribute, theElement.GetElementID(), thePackage);
+				}
+							
+			}
+			else{
+				log.error("Paquete destino con GUID: " + packageGUID + " no se pudo encontrar");
+			}
+			
+		}		
+		catch ( Exception e )
+		{
+			log.error(e.getMessage());
+			throw e;
+		}
+				
+	}
+		
+	private Element workOnNewElement(Repository rep, Package thePackage, String name, String description, String type, String stereotype) throws Exception {
+		Collection<Element> elements = thePackage.GetElements();
+		Element theElement = elements.AddNew(name, type);
+		theElement.SetNotes(description);
+		if(stereotype!= null){
+			theElement.SetStereotype(stereotype);
+		}
+		theElement.Update();
+		
+		log.debug( "Trabajando en el elemento " + theElement.GetName() 
+				+ "' (Type=" + theElement.GetType() + " ID=" 
+				+ theElement.GetElementID() + ")" );
+		
+		return theElement;
+	}
+	
+	private void workOnEntityAttributes(Repository rep, IAttribute modelAttribute, int elementID, Package thePackage) throws Exception{
 				
 		try
 		{
@@ -82,8 +115,27 @@ public class EAModelInteraction {
 			// ==================================================
 			// Create an attribute to work on
 			Collection<Attribute> attributes = theElement.GetAttributes();
+			parseAttributeType(modelAttribute, modelAttribute.getFormat());
 			Attribute newAttribute = attributes.AddNew( modelAttribute.getName(), 
 					parseAttributeType(modelAttribute, modelAttribute.getFormat()) );
+			if(modelAttribute instanceof IEnumAttribute){
+				
+				//Se crea enum
+				Element theEnumElement = workOnNewElement(rep, thePackage, modelAttribute.getName(), modelAttribute.getDescription(), "Class", "enumeration");
+				IEnumAttribute iEnum = (IEnumAttribute) modelAttribute;
+				Collection<Attribute> enumAttributes = theEnumElement.GetAttributes();
+				for(String enumAttribute : iEnum.getEnumValues()){
+					Attribute newEnumAttribute = enumAttributes.AddNew( enumAttribute, modelAttribute.getName() );
+					newEnumAttribute.Update();				
+					enumAttributes.Refresh();
+				}
+				
+				//Se relaciona el enum con clase Padre
+				workOnConnector(theEnumElement, theElement, "enum" , "Composition" );
+				
+				
+			}
+			newAttribute.SetNotes(modelAttribute.getDescription());
 			newAttribute.Update();				
 			attributes.Refresh();
 			
@@ -94,31 +146,66 @@ public class EAModelInteraction {
 			int addedAttributeID = newAttribute.GetAttributeID();
 			
 			if(modelAttribute.getRequired() != null && modelAttribute.getRequired() == true){
-				// ==================================================
-				// MANAGE ATTRIBUTE TAGGED VALUES
-				// ==================================================
-				// Add an attribute tag
-				Collection<AttributeTag> tags = newAttribute.GetTaggedValues();
-				String tagName = "json-param-required";
-				AttributeTag newTag 
-						= tags.AddNew( tagName, "true" );
-				newTag.Update();
-				tags.Refresh();
-				
-				log.debug( "Se agrega tag: " + newTag.GetName() 
-						+ " (ID=" + newTag.GetTagID() + ")" );
-				int newTagID = newTag.GetTagID();
-				
-				newTag = null;
-				tags = null;
+				 workOnAttributeTagValue("json-param-required", "true", newAttribute);
+			}
+			if(modelAttribute.getReadOnly() != null && modelAttribute.getReadOnly() == true){
+				 workOnAttributeTagValue("json-param-readonly", "true", newAttribute);
 			}
 			
 		}		
 		catch ( Exception e )
 		{
-			e.printStackTrace();
+			log.error(e.getMessage());
 			throw e;
 		}
+	}
+	
+	private void workOnAttributeTagValue(String tagName, String tagValue, Attribute attribute){
+		// ==================================================
+		// MANAGE ATTRIBUTE TAGGED VALUES
+		// ==================================================
+		// Add an attribute tag
+		Collection<AttributeTag> tags = attribute.GetTaggedValues();
+		//String tagName = "json-param-required";
+		AttributeTag newTag 
+				= tags.AddNew( tagName, tagValue );
+		newTag.Update();
+		tags.Refresh();
+		
+		log.debug( "Se agrega tag: " + newTag.GetName() 
+				+ " (ID=" + newTag.GetTagID() + ")" );
+		int newTagID = newTag.GetTagID();
+				
+	}
+	
+	private void workOnConnector(Element sourceElement, Element targetElement, String connName, String connStereotype){
+		// ==================================================
+		// CREATE CONNECTOR
+		// ==================================================
+		// Create the connector, set its endpoint and save it
+		Connector theConnector = sourceElement.GetConnectors().AddNew( 
+				connName, connStereotype );
+		theConnector.SetSupplierID( targetElement.GetElementID() );
+		theConnector.Update();
+		
+		// Refresh the connectors collection to include the newly created connector
+		sourceElement.GetConnectors().Refresh();
+		
+		log.debug( "Connector creado entre " + sourceElement.GetName() 
+				+ " and " + targetElement.GetName() );
+				
+		// ==================================================
+		// SET CLIENT AND SUPPLIER ROLES
+		// ==================================================
+//		ConnectorEnd clientEnd = theConnector.GetClientEnd();
+//		clientEnd.SetVisibility( "Private" );
+//		clientEnd.SetRole( "m_client" );
+//		clientEnd.Update();
+		
+		ConnectorEnd supplierEnd = theConnector.GetSupplierEnd();
+		supplierEnd.SetVisibility( "Protected" );
+		supplierEnd.SetRole( sourceElement.GetName() );
+		supplierEnd.Update();
 	}
 	
 	public void workOnEntityAttributesEAP(String eapFile, IAttribute modelAttribute, int elementID){
@@ -321,7 +408,6 @@ public class EAModelInteraction {
 			
 		}else if (attribute instanceof IEnumAttribute){
 			
-			//TODO creaClaseEnum
 			javaType = "enum";
 		}
 			
