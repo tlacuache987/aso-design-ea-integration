@@ -3,8 +3,11 @@ package mx.com.adesis.asodesign.eamodeler;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import mx.com.adesis.asodesign.eaintegration.api.IArrayAttribute;
 import mx.com.adesis.asodesign.eaintegration.api.IAttribute;
+import mx.com.adesis.asodesign.eaintegration.api.IEnumAttribute;
 import mx.com.adesis.asodesign.eaintegration.api.IModel;
+import mx.com.adesis.asodesign.eaintegration.api.IObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
 
 import org.sparx.Attribute;
@@ -80,7 +83,7 @@ public class EAModelInteraction {
 			// Create an attribute to work on
 			Collection<Attribute> attributes = theElement.GetAttributes();
 			Attribute newAttribute = attributes.AddNew( modelAttribute.getName(), 
-					parseAttributeType(modelAttribute.getAttributeType(), modelAttribute.getFormat()) );
+					parseAttributeType(modelAttribute, modelAttribute.getFormat()) );
 			newAttribute.Update();				
 			attributes.Refresh();
 			
@@ -137,7 +140,7 @@ public class EAModelInteraction {
 			// Create an attribute to work on
 			Collection<Attribute> attributes = theElement.GetAttributes();
 			Attribute newAttribute = attributes.AddNew( modelAttribute.getName(), 
-					parseAttributeType(modelAttribute.getAttributeType(), modelAttribute.getFormat()) );
+					parseAttributeType(modelAttribute, modelAttribute.getFormat()) );
 			newAttribute.Update();				
 			attributes.Refresh();
 			
@@ -216,7 +219,7 @@ public class EAModelInteraction {
 					Collection<Attribute> attributes = null;
 					for(IAttribute modelAttribute : model.getAttributes()){
 						attributes = element.GetAttributes();
-						Attribute newAttribute = attributes.AddNew(modelAttribute.getName(), parseAttributeType(modelAttribute.getAttributeType(), modelAttribute.getFormat()));
+						Attribute newAttribute = attributes.AddNew(modelAttribute.getName(), parseAttributeType(modelAttribute, modelAttribute.getFormat()));
 						newAttribute.SetNotes(modelAttribute.getDescription());
 						
 						Collection<AttributeTag> tags = newAttribute.GetTaggedValues();
@@ -281,7 +284,51 @@ public class EAModelInteraction {
 		
 	}
 	
-	public String parseAttributeType(AttributeType modelAttributeType, String format){
+	public String parseAttributeType(IAttribute attribute, String format){
+		String javaType = null;
+		
+		if(attribute instanceof IObjectAttribute){
+			
+			IObjectAttribute att = (IObjectAttribute) attribute;
+			AttributeType attType = att.getAttributeType();
+			javaType = "String";
+			if(attType == AttributeType.BOOLEAN){
+				javaType = "Boolean";
+			} else if (attType == AttributeType.INTEGER){
+				javaType = "Integer";
+			} else if (attribute.hasSubtype()){
+				javaType = att.getSubtype();
+			}
+			if(format != null && format.equals("date-time") && attType == AttributeType.STRING){
+				javaType = "Date";
+			}		
+			
+		} else if (attribute instanceof IArrayAttribute){
+			
+			IArrayAttribute att = (IArrayAttribute) attribute;
+			AttributeType attType = att.getAttributeType();
+			javaType = "String[]";
+			if(attType == AttributeType.BOOLEAN){
+				javaType = "Boolean[]";
+			} else if (attType == AttributeType.INTEGER){
+				javaType = "Integer[]";
+			} else if (attribute.hasSubtype()){
+				javaType = att.getSubtype() + "[]";
+			}
+			if(format != null && format.equals("date-time") && attType == AttributeType.STRING){
+				javaType = "Date[]";
+			}
+			
+		}else if (attribute instanceof IEnumAttribute){
+			
+			//TODO creaClaseEnum
+			javaType = "enum";
+		}
+			
+		return javaType;
+	}
+	
+	public String parseAttributeTypeOld(AttributeType modelAttributeType, String format){
 		String javaType = "String";
 		if(modelAttributeType == AttributeType.BOOLEAN){
 			javaType = "Boolean";
