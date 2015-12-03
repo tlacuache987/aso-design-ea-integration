@@ -1,4 +1,4 @@
-package mx.com.adesis.jsonschema.model;
+package mx.com.adesis.jsonschema;
 
 import java.util.ArrayList;
 import java.util.HashMap;

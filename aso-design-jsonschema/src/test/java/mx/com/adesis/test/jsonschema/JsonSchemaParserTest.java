@@ -1,10 +1,10 @@
 package mx.com.adesis.test.jsonschema;
 
 import lombok.extern.slf4j.Slf4j;
-import mx.com.adesis.jsonschema.model.JsonSchema;
-import mx.com.adesis.jsonschema.model.JsonSchemaBuilder;
-import mx.com.adesis.jsonschema.model.JsonSchemaItem;
-import mx.com.adesis.jsonschema.model.JsonSchemaProperty;
+import mx.com.adesis.jsonschema.JsonSchema;
+import mx.com.adesis.jsonschema.JsonSchemaBuilder;
+import mx.com.adesis.jsonschema.JsonSchemaItem;
+import mx.com.adesis.jsonschema.JsonSchemaProperty;
 
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class JsonSchemaParserTest {
 			+ "	\"properties\": {"
 			+ "		\"version\": {"
 			+ "			\"type\": \"string\","
-			+ "			\"description\": \"Versi�n del contrato\","
+			+ "			\"description\": \"Versión del contrato\","
 			+ "			\"readonly\": true"
 			+ "		},"
 			+ "		\"version2\": {"

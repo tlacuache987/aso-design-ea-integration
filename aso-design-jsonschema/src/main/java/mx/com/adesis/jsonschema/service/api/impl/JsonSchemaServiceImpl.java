@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import mx.com.adesis.asodesign.eaintegration.api.IModel;
-import mx.com.adesis.jsonschema.model.JsonSchema;
-import mx.com.adesis.jsonschema.model.JsonSchemaBuilder;
+import mx.com.adesis.jsonschema.JsonSchema;
+import mx.com.adesis.jsonschema.JsonSchemaBuilder;
 import mx.com.adesis.jsonschema.service.api.IJsonSchemaService;
 
 public abstract class JsonSchemaServiceImpl implements IJsonSchemaService {

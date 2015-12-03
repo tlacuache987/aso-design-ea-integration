@@ -1,4 +1,4 @@
-package mx.com.adesis.jsonschema.model;
+package mx.com.adesis.jsonschema;
 
 public enum JsonSchemaValueType {
 	STRING_VALUE, OBJECT_VALUE

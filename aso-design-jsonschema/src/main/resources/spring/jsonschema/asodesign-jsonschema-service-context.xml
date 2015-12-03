@@ -10,7 +10,7 @@
 		<lookup-method name="getJsonSchemaBuilder" bean="jsonSchemaBuilder" />
 	</bean>
 
-	<bean id="jsonSchemaBuilder" class="mx.com.adesis.jsonschema.model.JsonSchemaBuilder"
+	<bean id="jsonSchemaBuilder" class="mx.com.adesis.jsonschema.JsonSchemaBuilder"
 		scope="prototype" />
 
 </beans>

@@ -1,4 +1,4 @@
-package mx.com.adesis.jsonschema.model;
+package mx.com.adesis.jsonschema;
 
 public enum JsonSchemaPropertyType {
 	ARRAY("array"), BOOLEAN("boolean"), INTEGER("integer"), NUMBER("number"), NULL("null"), OBJECT(

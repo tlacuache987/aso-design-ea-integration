@@ -29,7 +29,7 @@ public class JsonSchemaServiceImplTest {
 			+ "	\"properties\": {"
 			+ "		\"version\": {"
 			+ "			\"type\": \"string\","
-			+ "			\"description\": \"Versi�n del contrato\","
+			+ "			\"description\": \"Versión del contrato\","
 			+ "			\"readonly\": true"
 			+ "		},"
 			+ "		\"version2\": {"
