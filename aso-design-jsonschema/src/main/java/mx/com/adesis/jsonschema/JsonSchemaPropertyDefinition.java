@@ -16,8 +16,8 @@ public class JsonSchemaPropertyDefinition {
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Boolean> required; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> description; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> format; //ya
-	private @Setter(AccessLevel.PACKAGE) List<JsonSchemaKeyValuePair<String>> oneOfProperties;
-	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<JsonSchemaItems> items; //ya
+	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<List<JsonSchemaOneOfPropertyDefinition>> oneOf; //ya
+	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<List<JsonSchemaItem>> items; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Integer> minItems; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Boolean> uniqueItems; //ya
 
@@ -55,7 +55,7 @@ public class JsonSchemaPropertyDefinition {
 	}
 
 	public boolean isOneOf() {
-		return oneOfProperties != null && oneOfProperties.size() > 0 ? true : false;
+		return oneOf != null && oneOf.getValue() != null && oneOf.getValue().size() > 0 ? true : false;
 	}
 
 	public boolean hasItems() {
@@ -117,6 +117,12 @@ public class JsonSchemaPropertyDefinition {
 
 		if (hasFormat()) {
 			sb.append("format = ").append(this.format);
+			attributes.add(sb.toString());
+			sb.setLength(0);
+		}
+		
+		if (isOneOf()) {
+			sb.append("oneOf = ").append(this.oneOf);
 			attributes.add(sb.toString());
 			sb.setLength(0);
 		}

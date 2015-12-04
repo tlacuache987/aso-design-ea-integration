@@ -10,7 +10,6 @@ import lombok.Setter;
 @Data
 public class JsonSchemaItemPropertyDefinition {
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<JsonSchemaPropertyType> type;
-	//BETA PROPERTY
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> description;
 
 	public boolean hasType() {
