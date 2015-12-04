@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import mx.com.adesis.asodesign.eaintegration.api.IArrayAttribute;
 import mx.com.adesis.asodesign.eaintegration.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.api.IEnumAttribute;
+import mx.com.adesis.asodesign.eaintegration.api.IInterfaceAttribute;
 import mx.com.adesis.asodesign.eaintegration.api.IModel;
 import mx.com.adesis.asodesign.eaintegration.api.IObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
@@ -116,7 +117,9 @@ public class EAModelInteraction {
 			// Create an attribute to work on
 			Collection<Attribute> attributes = theElement.GetAttributes();
 			parseAttributeType(modelAttribute, modelAttribute.getFormat());
-			Attribute newAttribute = attributes.AddNew( modelAttribute.getName(), 
+			String attributeNameLowerCase = modelAttribute.getName();
+			attributeNameLowerCase = attributeNameLowerCase.substring(0, 1).toLowerCase() + attributeNameLowerCase.substring(1);
+			Attribute newAttribute = attributes.AddNew( attributeNameLowerCase, 
 					parseAttributeType(modelAttribute, modelAttribute.getFormat()) );
 			if(modelAttribute instanceof IEnumAttribute){
 				
@@ -135,6 +138,14 @@ public class EAModelInteraction {
 				
 				
 			}
+			if(modelAttribute instanceof IInterfaceAttribute){
+				//Se crea la interfaz
+				Element theInterfaceElement = workOnNewElement(rep, thePackage, modelAttribute.getName(), modelAttribute.getDescription(), "Interface", null);
+				
+				//Se relaciona la interfaz con clase Padre
+				workOnConnector(theInterfaceElement, theElement, "interface" , "Composition" );
+			}			
+			
 			newAttribute.SetNotes(modelAttribute.getDescription());
 			newAttribute.Update();				
 			attributes.Refresh();
@@ -150,6 +161,23 @@ public class EAModelInteraction {
 			}
 			if(modelAttribute.getReadOnly() != null && modelAttribute.getReadOnly() == true){
 				 workOnAttributeTagValue("json-param-readonly", "true", newAttribute);
+			}
+			if(modelAttribute.getFormat() != null){
+				 workOnAttributeTagValue("json-param-format", modelAttribute.getFormat(), newAttribute);
+			}
+			if(modelAttribute.getPattern() != null){
+				 workOnAttributeTagValue("json-param-pattern", modelAttribute.getPattern(), newAttribute);
+			}
+			
+			//work on particular attrubutes tags
+			if(modelAttribute instanceof IArrayAttribute){
+				IArrayAttribute iArrayAttribute = (IArrayAttribute) modelAttribute;
+				if(iArrayAttribute.getMinItems() != null){
+					workOnAttributeTagValue("json-param-minitems", String.valueOf(iArrayAttribute.getMinItems()), newAttribute);
+				}
+				if(iArrayAttribute.getUniqueItems() != null){
+					workOnAttributeTagValue("json-param-uniqueitems", String.valueOf(iArrayAttribute.getUniqueItems()), newAttribute);
+				}
 			}
 			
 		}		
@@ -197,15 +225,15 @@ public class EAModelInteraction {
 		// ==================================================
 		// SET CLIENT AND SUPPLIER ROLES
 		// ==================================================
-//		ConnectorEnd clientEnd = theConnector.GetClientEnd();
-//		clientEnd.SetVisibility( "Private" );
-//		clientEnd.SetRole( "m_client" );
-//		clientEnd.Update();
+		ConnectorEnd clientEnd = theConnector.GetClientEnd();
+		clientEnd.SetVisibility( "Private" );
+		clientEnd.SetRole( sourceElement.GetName() );
+		clientEnd.Update();
 		
-		ConnectorEnd supplierEnd = theConnector.GetSupplierEnd();
-		supplierEnd.SetVisibility( "Protected" );
-		supplierEnd.SetRole( sourceElement.GetName() );
-		supplierEnd.Update();
+//		ConnectorEnd supplierEnd = theConnector.GetSupplierEnd();
+//		supplierEnd.SetVisibility( "Protected" );
+//		supplierEnd.SetRole( sourceElement.GetName() );
+//		supplierEnd.Update();
 	}
 	
 	public void workOnEntityAttributesEAP(String eapFile, IAttribute modelAttribute, int elementID){
@@ -385,10 +413,13 @@ public class EAModelInteraction {
 				javaType = "Integer";
 			} else if (attribute.hasSubtype()){
 				javaType = att.getSubtype();
-			}
-			if(format != null && format.equals("date-time") && attType == AttributeType.STRING){
+			} else if(attType == AttributeType.DATE){
 				javaType = "Date";
-			}		
+			} else if(attType == AttributeType.NUMBER){
+				javaType = "Double";
+			} else if(attType == AttributeType.OBJECT){
+				javaType = attribute.getSubtype();
+			}	
 			
 		} else if (attribute instanceof IArrayAttribute){
 			
@@ -401,10 +432,11 @@ public class EAModelInteraction {
 				javaType = "Integer[]";
 			} else if (attribute.hasSubtype()){
 				javaType = att.getSubtype() + "[]";
-			}
-			if(format != null && format.equals("date-time") && attType == AttributeType.STRING){
+			} else if(attType == AttributeType.DATE){
 				javaType = "Date[]";
-			}
+			}else if(attType == AttributeType.NUMBER){
+				javaType = "Double[]";
+			}	
 			
 		}else if (attribute instanceof IEnumAttribute){
 			

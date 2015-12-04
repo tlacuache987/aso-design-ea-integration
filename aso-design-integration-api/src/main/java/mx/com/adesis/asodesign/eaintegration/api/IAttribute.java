@@ -1,5 +1,7 @@
 package mx.com.adesis.asodesign.eaintegration.api;
 
+import java.util.List;
+
 import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
 
 
@@ -34,5 +36,13 @@ public interface IAttribute {
 	String getSubtype();
 	
 	void setSubtype(String subtype);
+	
+	String getPattern();
+	
+	void setPattern(String pattern);
+	
+	List<String> getAllowedValues();
+	
+	void setAllowedValues(List<String> allowedValues);
 	
 }
