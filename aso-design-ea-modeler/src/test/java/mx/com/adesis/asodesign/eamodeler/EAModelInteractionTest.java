@@ -9,6 +9,7 @@ import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
 import mx.com.adesis.asodesign.eamodeler.model.Model;
 import mx.com.adesis.asodesign.eamodeler.model.ModelArrayAttribute;
 import mx.com.adesis.asodesign.eamodeler.model.ModelEnumAttribute;
+import mx.com.adesis.asodesign.eamodeler.model.ModelInterfaceAttribute;
 import mx.com.adesis.asodesign.eamodeler.model.ModelObjectAttribute;
 
 import org.junit.Ignore;
@@ -16,8 +17,8 @@ import org.junit.Test;
 
 public class EAModelInteractionTest {
 
-	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseï¿½o\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
-	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseï¿½o\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
+	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
+	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
 
 	@Test
 	@Ignore
@@ -45,6 +46,8 @@ public class EAModelInteractionTest {
 		thirdModelAttribute.setName("observations");
 		thirdModelAttribute.setAttributeType(AttributeType.STRING);
 		thirdModelAttribute.setDescription("atributo de observaciones");
+		thirdModelAttribute.setMinItems(1);
+		thirdModelAttribute.setUniqueItems(true);
 
 		ModelObjectAttribute fourthModelAttribute = new ModelObjectAttribute();
 		fourthModelAttribute.setName("contact1");
@@ -67,6 +70,24 @@ public class EAModelInteractionTest {
 		sixthModelAttribute.setAttributeType(AttributeType.OBJECT);
 		sixthModelAttribute.setDescription("lista de participantes");
 		sixthModelAttribute.setSubtype("Participant");
+		
+		ModelObjectAttribute seventhModelAttribute = new ModelObjectAttribute();
+		seventhModelAttribute.setName("server");
+		seventhModelAttribute.setAttributeType(AttributeType.OBJECT);
+		fourthModelAttribute.setSubtype("Server");
+		List<String> allowedValues = new ArrayList<String>();
+		allowedValues.add("host-name");
+		allowedValues.add("ipv4");
+		seventhModelAttribute.setAllowedValues(allowedValues);
+		
+		ModelInterfaceAttribute eighthModelAttribute = new ModelInterfaceAttribute();
+		eighthModelAttribute.setName("storage");
+		eighthModelAttribute.setAttributeType(AttributeType.OBJECT);
+		fourthModelAttribute.setSubtype("Storage");
+		List<String> resources = new ArrayList<String>();
+		resources.add("diskDevice");
+		resources.add("ipv4");
+		eighthModelAttribute.setAllowedValues(resources);
 
 		List<IAttribute> modelAttributeList = new ArrayList<IAttribute>();
 		modelAttributeList.add(modelAttribute);
@@ -75,6 +96,8 @@ public class EAModelInteractionTest {
 		modelAttributeList.add(fourthModelAttribute);
 		modelAttributeList.add(fifthModelAttribute);
 		modelAttributeList.add(sixthModelAttribute);
+		modelAttributeList.add(seventhModelAttribute);
+		modelAttributeList.add(eighthModelAttribute);
 
 		model.setAttributes(modelAttributeList);
 
