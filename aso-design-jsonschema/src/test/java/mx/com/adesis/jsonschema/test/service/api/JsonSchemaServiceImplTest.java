@@ -2,6 +2,7 @@ package mx.com.adesis.jsonschema.test.service.api;
 
 import lombok.extern.slf4j.Slf4j;
 import mx.com.adesis.asodesign.eaintegration.api.IModel;
+import mx.com.adesis.jsonschema.JsonSchema;
 import mx.com.adesis.jsonschema.service.api.IJsonSchemaService;
 
 import org.junit.Assert;
@@ -42,6 +43,24 @@ public class JsonSchemaServiceImplTest {
 			+ "			\"description\": \"Sexo del contrato\","
 			+ "			\"readonly\": false"
 			+ "		},"
+			+ "		\"product\": {"
+			+ "			\"oneOf\": ["
+			+ "				{ \"$ref\": \"account\" },"
+			+ "				{ \"$ref\": \"card\" },"
+			+ "				{ \"$ref\": \"investments\" },"
+			+ "				{ \"$ref\": \"loan\" },"
+			+ "				{ \"$ref\": \"scrow\" },"
+			+ "				{ \"$ref\": \"heritage\" }"
+			+ "			]"
+			+ "		},"
+			+ "		\"server\": {"
+			+ "			\"type\": \"string\","
+			+ "			\"oneOf\": ["
+			+ "				{ \"format\": \"host-name\" },"
+			+ "				{ \"format\": \"ipv4\" },"
+			+ "				{ \"format\": \"ipv6\" }"
+			+ "			]"
+			+ "		},"
 			+ "		\"options\": {"
 			+ "			\"type\": \"array\","
 			+ "			\"minItems\": 1,"
@@ -69,8 +88,10 @@ public class JsonSchemaServiceImplTest {
 		log.info("inicia testA ---------------------------------");
 
 		IModel model = jsonSchemaService.getModelFormJsonSchema(jsonSchemaAsString);
+		JsonSchema jsonSchema = jsonSchemaService.getJsonSchema(jsonSchemaAsString);
 
 		System.out.println("model: " + model);
+		System.out.println("jsonSchema: " + jsonSchema);
 
 		log.info("finaliza testA ---------------------------------");
 		log.info("");

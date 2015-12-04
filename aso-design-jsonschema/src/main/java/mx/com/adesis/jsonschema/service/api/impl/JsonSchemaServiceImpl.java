@@ -18,21 +18,34 @@ public abstract class JsonSchemaServiceImpl implements IJsonSchemaService {
 	}
 
 	@Override
-	public IModel getModelFormJsonSchema(String jsonSchemaString) {
+	public IModel getModelFormJsonSchema(String jsonSchemaAsString) {
+		return this.getModelFormJsonSchema(this.getJsonSchema(jsonSchemaAsString));
+	}
+
+	@Override
+	public IModel getModelFormJsonSchema(JsonSchema jsonSchema) {
+		// TODO Auto-generated method stub
+
+		System.out.println("Processing..... JsonSchema jsonSchema to IModel");
+
+		return null;
+	}
+
+	@Override
+	public JsonSchema getJsonSchema(InputStream jsonSchemaInputStream) {
+		return this.getJsonSchema(this.getJsonSchemaFromInputStream(jsonSchemaInputStream));
+	}
+
+	@Override
+	public JsonSchema getJsonSchema(String jsonSchemaAsString) {
 		System.out.println("JsonSchemaServiceImpl: " + this.toString());
 
 		final JsonSchemaBuilder jsonSchemaBuilder = getJsonSchemaBuilder();
 
 		System.out.println("jsonSchemaBuilder: " + jsonSchemaBuilder.toString());
 
-		final JsonSchema jsonSchema = jsonSchemaBuilder.build(jsonSchemaString);
-
-		System.out.println(jsonSchema);
-
-		return null;
+		return jsonSchemaBuilder.build(jsonSchemaAsString);
 	}
-
-	public abstract JsonSchemaBuilder getJsonSchemaBuilder();
 
 	private String getJsonSchemaFromInputStream(InputStream jsonSchemaInputStream) {
 		StringBuilder sb = new StringBuilder();
@@ -52,5 +65,7 @@ public abstract class JsonSchemaServiceImpl implements IJsonSchemaService {
 		}
 		return sb.toString();
 	}
+
+	public abstract JsonSchemaBuilder getJsonSchemaBuilder();
 
 }

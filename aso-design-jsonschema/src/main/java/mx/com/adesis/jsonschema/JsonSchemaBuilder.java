@@ -98,7 +98,7 @@ public class JsonSchemaBuilder {
 
 			final JsonSchemaProperty jsonProperty = new JsonSchemaProperty(key);
 
-			//System.out.println("llave: " + key + " => " + jsonSchemaType);
+			System.out.println("llave: " + key + " => " + jsonSchemaType);
 
 			switch (jsonSchemaType) {
 			case STRING_VALUE:
@@ -117,8 +117,6 @@ public class JsonSchemaBuilder {
 				}
 
 				if (propertyMap.containsKey("type")) {
-					System.out.println("tipooo: " + (String) propertyMap.get("type"));
-
 					jsonProperty.getDefinition().setType(
 							new JsonSchemaKeyValuePair<JsonSchemaPropertyType>());
 					jsonProperty.getDefinition().getType().setKey("type");
