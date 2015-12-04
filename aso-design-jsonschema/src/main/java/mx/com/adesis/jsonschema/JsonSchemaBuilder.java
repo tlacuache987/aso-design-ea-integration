@@ -168,15 +168,26 @@ public class JsonSchemaBuilder {
 				}
 
 				if (propertyMap.containsKey("items")) {
-					jsonProperty.getDefinition().setItems(new JsonSchemaKeyValuePair<List<JsonSchemaItem>>());
+
+					jsonProperty.getDefinition().setItems(
+							new JsonSchemaKeyValuePair<List<JsonSchemaItemPropertyDefinition>>());
 					jsonProperty.getDefinition().getItems().setKey("items");
 
 					@SuppressWarnings("unchecked")
-					final List<JsonSchemaItem> jsonSchemaListItems = processItems((HashMap<String, Object>) propertyMap
+					final List<JsonSchemaItemPropertyDefinition> jsonSchemaItemPropertyDefinitionList = processItems2((HashMap<String, Object>) propertyMap
+							.get("items"));
+
+					jsonProperty.getDefinition().getItems().setValue(jsonSchemaItemPropertyDefinitionList);
+
+					/*jsonProperty.getDefinition().setItems(new JsonSchemaKeyValuePair<List<JsonSchemaItem_>>());
+					jsonProperty.getDefinition().getItems().setKey("items");
+
+					@SuppressWarnings("unchecked")
+					final List<JsonSchemaItem_> jsonSchemaListItems = processItems((HashMap<String, Object>) propertyMap
 							.get("items"));
 
 					jsonProperty.getDefinition().getItems()
-							.setValue(jsonSchemaListItems);
+							.setValue(jsonSchemaListItems);*/
 				}
 
 				if (propertyMap.containsKey("minItems")) {
@@ -272,9 +283,9 @@ public class JsonSchemaBuilder {
 		return listOneOf;
 	}
 
-	private List<JsonSchemaItem> processItems(HashMap<String, Object> map) {
+	private List<JsonSchemaItem_> processItems(HashMap<String, Object> map) {
 
-		final List<JsonSchemaItem> jsonSchemaListItems = new ArrayList<JsonSchemaItem>();
+		final List<JsonSchemaItem_> jsonSchemaListItems = new ArrayList<JsonSchemaItem_>();
 
 		final Set<String> keySet = map.keySet();
 
@@ -282,7 +293,7 @@ public class JsonSchemaBuilder {
 
 			final JsonSchemaValueType jsonSchemaType = getType(map.get(key));
 
-			final JsonSchemaItem jsonItem = new JsonSchemaItem(key);
+			final JsonSchemaItem_ jsonItem = new JsonSchemaItem_(key);
 
 			//System.out.println("llaveS: " + key + " => " + jsonSchemaType);
 
@@ -314,6 +325,67 @@ public class JsonSchemaBuilder {
 			}
 
 			jsonSchemaListItems.add(jsonItem);
+		}
+
+		return jsonSchemaListItems;
+	}
+
+	private List<JsonSchemaItemPropertyDefinition> processItems2(HashMap<String, Object> map) {
+
+		final List<JsonSchemaItemPropertyDefinition> jsonSchemaListItems = new ArrayList<JsonSchemaItemPropertyDefinition>();
+
+		final Set<String> keySet = map.keySet();
+
+		for (String key : keySet) {
+
+			final JsonSchemaValueType jsonSchemaType = getType(map.get(key));
+
+			//System.out.println("llaveS: " + key + " => " + jsonSchemaType);
+
+			JsonSchemaItemPropertyDefinition jsonSchemaItemPropertyDefinition = null;
+
+			switch (jsonSchemaType) {
+			case STRING_VALUE:
+
+				if (key.equalsIgnoreCase("type")) {
+					jsonSchemaItemPropertyDefinition = new JsonSchemaItemPropertyDefinition();
+
+					jsonSchemaItemPropertyDefinition.setType(new JsonSchemaKeyValuePair<JsonSchemaPropertyType>());
+					jsonSchemaItemPropertyDefinition.getType().setKey("type");
+
+					JsonSchemaPropertyType typeValue = obtainPropertyType((String) map.get("type"));
+
+					jsonSchemaItemPropertyDefinition.getType().setValue(typeValue);
+					/*jsonItem.getDefinition().setType(
+							new JsonSchemaKeyValuePair<JsonSchemaPropertyType>());
+					jsonItem.getDefinition().getType().setKey("type");
+
+					JsonSchemaPropertyType typeValue = obtainPropertyType((String) map.get("type"));
+
+					jsonItem.getDefinition().getType()
+							.setValue(typeValue);*/
+				}
+
+				if (key.equalsIgnoreCase("description")) {
+					jsonSchemaItemPropertyDefinition = new JsonSchemaItemPropertyDefinition();
+
+					jsonSchemaItemPropertyDefinition.setDescription(new JsonSchemaKeyValuePair<String>());
+					jsonSchemaItemPropertyDefinition.getDescription().setKey("description");
+					jsonSchemaItemPropertyDefinition.getDescription().setValue((String) map.get("description"));
+					/*jsonItem.getDefinition().setDescription(
+							new JsonSchemaKeyValuePair<String>());
+					jsonItem.getDefinition().getDescription().setKey("description");
+					jsonItem.getDefinition().getDescription()
+							.setValue((String) map.get("description"));*/
+				}
+
+				break;
+			case OBJECT_VALUE:
+				break;
+			}
+
+			if (jsonSchemaItemPropertyDefinition != null)
+				jsonSchemaListItems.add(jsonSchemaItemPropertyDefinition);
 		}
 
 		return jsonSchemaListItems;

@@ -3,7 +3,7 @@ package mx.com.adesis.test.jsonschema;
 import lombok.extern.slf4j.Slf4j;
 import mx.com.adesis.jsonschema.JsonSchema;
 import mx.com.adesis.jsonschema.JsonSchemaBuilder;
-import mx.com.adesis.jsonschema.JsonSchemaItem;
+import mx.com.adesis.jsonschema.JsonSchemaItemPropertyDefinition;
 import mx.com.adesis.jsonschema.JsonSchemaProperty;
 
 import org.junit.Test;
@@ -87,11 +87,10 @@ public class JsonSchemaParserTest {
 						log.info("\t\tEs array");
 
 						if (jsp.getDefinition().hasItems()) {
-							for (JsonSchemaItem item : jsp.getDefinition().getItems().getValue()) {
+							for (JsonSchemaItemPropertyDefinition item : jsp.getDefinition().getItems().getValue()) {
 
-								if (item.getName().equals("type"))
-									log.info("\t\t\tEl tipo del array es: {}", item.getDefinition()
-											.getType().getValue().getEnumValue());
+								if (item.hasType())
+									log.info("\t\t\tEl tipo del array es: {}", item.getType().getValue().getEnumValue());
 							}
 						}
 						continue;
