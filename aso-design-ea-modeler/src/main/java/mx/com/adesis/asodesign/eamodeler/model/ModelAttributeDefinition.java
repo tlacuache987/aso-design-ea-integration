@@ -1,7 +1,7 @@
 package mx.com.adesis.asodesign.eamodeler.model;
 
 import lombok.Data;
-import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
+import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 
 @Data
 public class ModelAttributeDefinition {

@@ -5,31 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import mx.com.adesis.asodesign.eaintegration.api.IModel;
 import mx.com.adesis.jsonschema.JsonSchema;
 import mx.com.adesis.jsonschema.JsonSchemaBuilder;
+import mx.com.adesis.jsonschema.service.api.IJsonSchemaConverter;
 import mx.com.adesis.jsonschema.service.api.IJsonSchemaService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class JsonSchemaServiceImpl implements IJsonSchemaService {
 
-	@Override
-	public IModel getModelFormJsonSchema(InputStream jsonSchemaInputStream) {
-		return this.getModelFormJsonSchema(getJsonSchemaFromInputStream(jsonSchemaInputStream));
-	}
-
-	@Override
-	public IModel getModelFormJsonSchema(String jsonSchemaAsString) {
-		return this.getModelFormJsonSchema(this.getJsonSchema(jsonSchemaAsString));
-	}
-
-	@Override
-	public IModel getModelFormJsonSchema(JsonSchema jsonSchema) {
-		// TODO Auto-generated method stub
-
-		System.out.println("Processing..... JsonSchema jsonSchema to IModel");
-
-		return null;
-	}
+	@Autowired
+	private IJsonSchemaConverter jsonSchemaConverter;
 
 	@Override
 	public JsonSchema getJsonSchema(InputStream jsonSchemaInputStream) {

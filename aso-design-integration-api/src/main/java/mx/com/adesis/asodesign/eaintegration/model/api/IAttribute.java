@@ -1,8 +1,8 @@
-package mx.com.adesis.asodesign.eaintegration.api;
+package mx.com.adesis.asodesign.eaintegration.model.api;
 
 import java.util.List;
 
-import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
+import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 
 
 public interface IAttribute {

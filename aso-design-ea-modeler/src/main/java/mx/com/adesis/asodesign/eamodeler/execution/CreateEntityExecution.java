@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 
-import mx.com.adesis.asodesign.eaintegration.api.IAttribute;
-import mx.com.adesis.asodesign.eaintegration.api.IModel;
-import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
+import mx.com.adesis.asodesign.eaintegration.model.api.IAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
+import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 import mx.com.adesis.asodesign.eamodeler.EAModelInteraction;
 import mx.com.adesis.asodesign.eamodeler.model.Model;
 import mx.com.adesis.asodesign.eamodeler.model.ModelArrayAttribute;
@@ -30,10 +30,10 @@ public class CreateEntityExecution implements IExecution {
 
 	public void runExample(File projectFile, ExecutionUI uiFrame) {
 		DefaultListModel outputList = uiFrame.getOutputListModel();
-		outputList.addElement("Comienza la ejecución de la implementacion CreateEntityExecution... espere un momento");
+		outputList.addElement("Comienza la ejecuciï¿½n de la implementacion CreateEntityExecution... espere un momento");
 		try {
 			createAttributeFromNewElement(projectFile.getAbsolutePath());
-			outputList.addElement("Ejecución terminada");
+			outputList.addElement("Ejecuciï¿½n terminada");
 		} catch (Exception e) {
 			outputList.addElement("ERROR: " + e.getMessage());
 		}
@@ -74,7 +74,7 @@ public class CreateEntityExecution implements IExecution {
 				
 		ModelEnumAttribute fifthModelAttribute = new ModelEnumAttribute();
 		fifthModelAttribute.setName("operationType");
-		fifthModelAttribute.setDescription("tipo de operación");
+		fifthModelAttribute.setDescription("tipo de operaciï¿½n");
 		List<String> enumValues = new ArrayList<String>();
 		enumValues.add(0, "TRASPASO");
 		enumValues.add(1, "CONSULTA");

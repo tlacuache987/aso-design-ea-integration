@@ -3,9 +3,9 @@ package mx.com.adesis.asodesign.eamodeler;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.com.adesis.asodesign.eaintegration.api.IAttribute;
-import mx.com.adesis.asodesign.eaintegration.api.IModel;
-import mx.com.adesis.asodesign.eaintegration.enums.AttributeType;
+import mx.com.adesis.asodesign.eaintegration.model.api.IAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
+import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 import mx.com.adesis.asodesign.eamodeler.model.Model;
 import mx.com.adesis.asodesign.eamodeler.model.ModelArrayAttribute;
 import mx.com.adesis.asodesign.eamodeler.model.ModelEnumAttribute;
@@ -17,8 +17,8 @@ import org.junit.Test;
 
 public class EAModelInteractionTest {
 
-	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
-	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
+	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseï¿½o\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
+	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseï¿½o\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
 
 	@Test
 	@Ignore

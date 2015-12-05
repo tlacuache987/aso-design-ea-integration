@@ -6,6 +6,9 @@
 
 	<context:component-scan base-package="mx.com.adesis.jsonschema.service.api.impl" />
 
+	<bean
+		class="mx.com.adesis.asodesign.eaintegration.service.api.impl.ModelService" />
+
 	<bean class="mx.com.adesis.jsonschema.service.api.impl.JsonSchemaServiceImpl">
 		<lookup-method name="getJsonSchemaBuilder" bean="jsonSchemaBuilder" />
 	</bean>

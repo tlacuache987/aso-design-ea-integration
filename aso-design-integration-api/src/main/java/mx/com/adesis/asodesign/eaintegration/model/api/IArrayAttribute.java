@@ -1,4 +1,4 @@
-package mx.com.adesis.asodesign.eaintegration.api;
+package mx.com.adesis.asodesign.eaintegration.model.api;
 
 
 public interface IArrayAttribute extends IAttribute {

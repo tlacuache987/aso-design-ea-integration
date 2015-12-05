@@ -1,7 +1,6 @@
 package mx.com.adesis.jsonschema.test.service.api;
 
 import lombok.extern.slf4j.Slf4j;
-import mx.com.adesis.asodesign.eaintegration.api.IModel;
 import mx.com.adesis.jsonschema.JsonSchema;
 import mx.com.adesis.jsonschema.service.api.IJsonSchemaService;
 
@@ -87,10 +86,8 @@ public class JsonSchemaServiceImplTest {
 	public void testA() {
 		log.info("inicia testA ---------------------------------");
 
-		IModel model = jsonSchemaService.getModelFormJsonSchema(jsonSchemaAsString);
 		JsonSchema jsonSchema = jsonSchemaService.getJsonSchema(jsonSchemaAsString);
 
-		System.out.println("model: " + model);
 		System.out.println("jsonSchema: " + jsonSchema);
 
 		log.info("finaliza testA ---------------------------------");
