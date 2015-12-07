@@ -21,7 +21,7 @@ public class EAModelInteractionTest {
 	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
 
 	@Test
-	@Ignore
+	//@Ignore
 	public void testCreateNewElements() {
 
 		Model model = new Model();
@@ -60,6 +60,7 @@ public class EAModelInteractionTest {
 		ModelEnumAttribute fifthModelAttribute = new ModelEnumAttribute();
 		fifthModelAttribute.setName("operationType");
 		fifthModelAttribute.setDescription("tipo de operaciÃ³n"); //checar codiifcaciones, por que hay pedos
+		fifthModelAttribute.setSubtype("OperationType");
 		List<String> enumValues = new ArrayList<String>();
 		enumValues.add(0, "TRASPASO");
 		enumValues.add(1, "CONSULTA");
@@ -74,7 +75,7 @@ public class EAModelInteractionTest {
 		ModelObjectAttribute seventhModelAttribute = new ModelObjectAttribute();
 		seventhModelAttribute.setName("server");
 		seventhModelAttribute.setAttributeType(AttributeType.OBJECT);
-		fourthModelAttribute.setSubtype("Server");
+		seventhModelAttribute.setSubtype("Server");
 		List<String> allowedValues = new ArrayList<String>();
 		allowedValues.add("host-name");
 		allowedValues.add("ipv4");
@@ -83,11 +84,11 @@ public class EAModelInteractionTest {
 		ModelInterfaceAttribute eighthModelAttribute = new ModelInterfaceAttribute();
 		eighthModelAttribute.setName("storage");
 		eighthModelAttribute.setAttributeType(AttributeType.OBJECT);
-		fourthModelAttribute.setSubtype("Storage");
+		eighthModelAttribute.setSubtype("Storage");
 		List<String> resources = new ArrayList<String>();
 		resources.add("diskDevice");
 		resources.add("ipv4");
-		eighthModelAttribute.setAllowedValues(resources);
+		eighthModelAttribute.setResources(resources);
 
 		List<IAttribute> modelAttributeList = new ArrayList<IAttribute>();
 		modelAttributeList.add(modelAttribute);

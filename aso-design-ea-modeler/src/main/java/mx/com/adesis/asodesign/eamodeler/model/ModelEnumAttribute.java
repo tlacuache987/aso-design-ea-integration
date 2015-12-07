@@ -6,9 +6,14 @@ import lombok.Data;
 import mx.com.adesis.asodesign.eaintegration.api.IEnumAttribute;
 
 @Data
-public class ModelEnumAttribute  extends ModelAttribute implements IEnumAttribute{
+public class ModelEnumAttribute extends ModelAttribute implements IEnumAttribute{
 	
 	public List<String> enumValues;
+
+	public String parseAsEAModelType() {
+		String eaType = this.getSubtype();
+		return eaType;
+	}
 	
 	
 }

@@ -9,5 +9,9 @@ import mx.com.adesis.asodesign.eaintegration.api.IInterfaceAttribute;
 public class ModelInterfaceAttribute extends ModelAttribute implements IInterfaceAttribute{
 	
 	public List<String> resources;
+
+	public String parseAsEAModelType() {
+		return this.getSubtype();
+	}
 	
 }

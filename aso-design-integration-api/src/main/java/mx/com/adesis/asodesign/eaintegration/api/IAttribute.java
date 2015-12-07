@@ -45,4 +45,6 @@ public interface IAttribute {
 	
 	void setAllowedValues(List<String> allowedValues);
 	
+	String parseAsEAModelType();
+	
 }
