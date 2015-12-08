@@ -1,14 +1,14 @@
-package mx.com.adesis.asodesign.eamodeler.model;
+package mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl;
 
 import lombok.Data;
-import mx.com.adesis.asodesign.eaintegration.model.api.IArrayAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IArrayAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 
 @Data
 public class ModelArrayAttribute extends ModelAttribute implements IArrayAttribute {
-
-	public Integer minItems;
-	public Boolean uniqueItems;
+	private AttributeType attributeType;
+	private Integer minItems;
+	private Boolean uniqueItems;
 
 	public String parseAsEAModelType() {
 		String javaType = null;
@@ -27,5 +27,4 @@ public class ModelArrayAttribute extends ModelAttribute implements IArrayAttribu
 		}
 		return javaType;
 	}
-
 }

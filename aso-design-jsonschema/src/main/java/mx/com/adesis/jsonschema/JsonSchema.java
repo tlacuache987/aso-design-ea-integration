@@ -32,8 +32,8 @@ public class JsonSchema {
 
 	public boolean hasProperties() {
 		return properties != null && properties.getValue() != null
-				&& properties.getValue().getProperties() != null
-				&& properties.getValue().getProperties().size() > 0 ? true : false;
+				&& properties.getValue().getList() != null
+				&& properties.getValue().getList().size() > 0 ? true : false;
 	}
 
 	public boolean hasRequired() {

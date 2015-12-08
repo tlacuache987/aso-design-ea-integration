@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 
 import mx.com.adesis.jsonschema.JsonSchema;
 import mx.com.adesis.jsonschema.JsonSchemaBuilder;
-import mx.com.adesis.jsonschema.service.api.IJsonSchemaConverter;
+import mx.com.adesis.jsonschema.service.api.IJsonSchemaToModelConverter;
 import mx.com.adesis.jsonschema.service.api.IJsonSchemaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class JsonSchemaServiceImpl implements IJsonSchemaService {
 
 	@Autowired
-	private IJsonSchemaConverter jsonSchemaConverter;
+	private IJsonSchemaToModelConverter jsonSchemaConverter;
 
 	@Override
 	public JsonSchema getJsonSchema(InputStream jsonSchemaInputStream) {

@@ -76,7 +76,7 @@ public class JsonSchemaParserTest {
 		if (jsonSchema.hasProperties()) {
 			log.info("{}", "Properties");
 
-			for (JsonSchemaProperty jsp : jsonSchema.getProperties().getValue().getProperties()) {
+			for (JsonSchemaProperty jsp : jsonSchema.getProperties().getValue().getList()) {
 				log.info("\t{}", jsp.getName());
 				log.info("\t{}", "\tdefinition: " + jsp.getDefinition());
 

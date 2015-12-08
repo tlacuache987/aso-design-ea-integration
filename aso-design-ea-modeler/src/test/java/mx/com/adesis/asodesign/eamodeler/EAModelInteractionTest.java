@@ -3,14 +3,14 @@ package mx.com.adesis.asodesign.eamodeler;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.com.adesis.asodesign.eaintegration.model.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
+import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelArrayAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelEnumAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelInterfaceAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
-import mx.com.adesis.asodesign.eamodeler.model.Model;
-import mx.com.adesis.asodesign.eamodeler.model.ModelArrayAttribute;
-import mx.com.adesis.asodesign.eamodeler.model.ModelEnumAttribute;
-import mx.com.adesis.asodesign.eamodeler.model.ModelInterfaceAttribute;
-import mx.com.adesis.asodesign.eamodeler.model.ModelObjectAttribute;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,13 +30,13 @@ public class EAModelInteractionTest {
 
 		EAModelInteraction modifyModel = new EAModelInteraction();
 
-		ModelObjectAttribute modelAttribute = new ModelObjectAttribute();
+		ObjectAttribute modelAttribute = new ObjectAttribute();
 		modelAttribute.setName("nameJOG2");
 		modelAttribute.setAttributeType(AttributeType.STRING);
 		modelAttribute.setDescription("atributo de nombre");
 		modelAttribute.setRequired(true);
 
-		ModelObjectAttribute secondModelAttribute = new ModelObjectAttribute();
+		ObjectAttribute secondModelAttribute = new ObjectAttribute();
 		secondModelAttribute.setName("registrationDate");
 		secondModelAttribute.setAttributeType(AttributeType.DATE);
 		secondModelAttribute.setDescription("atributo de fecha de alta");
@@ -49,7 +49,7 @@ public class EAModelInteractionTest {
 		thirdModelAttribute.setMinItems(1);
 		thirdModelAttribute.setUniqueItems(true);
 
-		ModelObjectAttribute fourthModelAttribute = new ModelObjectAttribute();
+		ObjectAttribute fourthModelAttribute = new ObjectAttribute();
 		fourthModelAttribute.setName("contact1");
 		fourthModelAttribute.setSubtype("Contract");
 		fourthModelAttribute.setAttributeType(AttributeType.OBJECT);
@@ -72,7 +72,7 @@ public class EAModelInteractionTest {
 		sixthModelAttribute.setDescription("lista de participantes");
 		sixthModelAttribute.setSubtype("Participant");
 
-		ModelObjectAttribute seventhModelAttribute = new ModelObjectAttribute();
+		ObjectAttribute seventhModelAttribute = new ObjectAttribute();
 		seventhModelAttribute.setName("server");
 		seventhModelAttribute.setAttributeType(AttributeType.OBJECT);
 		seventhModelAttribute.setSubtype("Server");
@@ -83,7 +83,6 @@ public class EAModelInteractionTest {
 
 		ModelInterfaceAttribute eighthModelAttribute = new ModelInterfaceAttribute();
 		eighthModelAttribute.setName("storage");
-		eighthModelAttribute.setAttributeType(AttributeType.OBJECT);
 		eighthModelAttribute.setSubtype("Storage");
 		List<String> resources = new ArrayList<String>();
 		resources.add("diskDevice");
@@ -107,7 +106,7 @@ public class EAModelInteractionTest {
 		secondModel.setName("SystemRole");
 		secondModel.setDescription("Roles del Sistema");
 
-		ModelObjectAttribute secondModelfirstAttribute = new ModelObjectAttribute();
+		ObjectAttribute secondModelfirstAttribute = new ObjectAttribute();
 		secondModelfirstAttribute.setName("id");
 		secondModelfirstAttribute.setAttributeType(AttributeType.INTEGER);
 		secondModelfirstAttribute.setDescription("clave del rol");

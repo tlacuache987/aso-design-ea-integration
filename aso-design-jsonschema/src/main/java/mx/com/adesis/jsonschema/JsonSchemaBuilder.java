@@ -226,7 +226,7 @@ public class JsonSchemaBuilder {
 				break;
 			}
 
-			jsonProperties.getProperties().add(jsonProperty);
+			jsonProperties.getList().add(jsonProperty);
 		}
 
 		return jsonProperties;

@@ -9,10 +9,10 @@ import lombok.Setter;
 
 @Data
 public class JsonSchemaProperties {
-	private @Setter(AccessLevel.PACKAGE) List<JsonSchemaProperty> properties;
+	private @Setter(AccessLevel.PACKAGE) List<JsonSchemaProperty> list;
 
 	JsonSchemaProperties() {
-		this.properties = new ArrayList<JsonSchemaProperty>();
+		this.list = new ArrayList<JsonSchemaProperty>();
 	}
 
 	@Override
@@ -21,7 +21,7 @@ public class JsonSchemaProperties {
 		sb.append("\n\t\tJsonSchemaProperties(\n");
 
 		int i = 0;
-		for (JsonSchemaProperty jsp : properties) {
+		for (JsonSchemaProperty jsp : list) {
 			sb.append("\t\t\t[" + (i++) + "] = ").append(jsp).append("\n");
 			sb.append("\t\t\t\t").append(jsp.getDefinition()).append("\n");
 		}

@@ -1,4 +1,4 @@
-package mx.com.adesis.asodesign.eaintegration.model.api;
+package mx.com.adesis.asodesign.eaintegration.model.attribute.api;
 
 import java.util.List;
 

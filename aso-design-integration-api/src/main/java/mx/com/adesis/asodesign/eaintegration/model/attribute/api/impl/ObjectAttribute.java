@@ -1,11 +1,15 @@
-package mx.com.adesis.asodesign.eamodeler.model;
+package mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl;
+
+import java.util.List;
 
 import lombok.Data;
-import mx.com.adesis.asodesign.eaintegration.model.api.IObjectAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 
 @Data
-public class ModelObjectAttribute extends ModelAttribute implements IObjectAttribute {
+public class ObjectAttribute extends ModelAttribute implements IObjectAttribute {
+	private AttributeType attributeType;
+	private List<String> allowedValues;
 
 	public String parseAsEAModelType() {
 		String javaType = null;
@@ -24,5 +28,4 @@ public class ModelObjectAttribute extends ModelAttribute implements IObjectAttri
 		}
 		return javaType;
 	}
-
 }

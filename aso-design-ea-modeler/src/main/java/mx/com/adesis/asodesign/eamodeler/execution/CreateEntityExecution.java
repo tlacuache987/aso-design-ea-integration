@@ -6,14 +6,14 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 
-import mx.com.adesis.asodesign.eaintegration.model.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
+import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelArrayAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelEnumAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 import mx.com.adesis.asodesign.eamodeler.EAModelInteraction;
-import mx.com.adesis.asodesign.eamodeler.model.Model;
-import mx.com.adesis.asodesign.eamodeler.model.ModelArrayAttribute;
-import mx.com.adesis.asodesign.eamodeler.model.ModelEnumAttribute;
-import mx.com.adesis.asodesign.eamodeler.model.ModelObjectAttribute;
 import mx.com.adesis.asodesign.eamodeler.ui.ExecutionUI;
 
 
@@ -47,13 +47,13 @@ public class CreateEntityExecution implements IExecution {
 		
 		EAModelInteraction modifyModel = new EAModelInteraction();
 				
-		ModelObjectAttribute modelAttribute = new ModelObjectAttribute();
+		ObjectAttribute modelAttribute = new ObjectAttribute();
 		modelAttribute.setName("nameJOG2");
 		modelAttribute.setAttributeType(AttributeType.STRING);
 		modelAttribute.setDescription("atributo de nombre");
 		modelAttribute.setRequired(true);
 		
-		ModelObjectAttribute secondModelAttribute = new ModelObjectAttribute();
+		ObjectAttribute secondModelAttribute = new ObjectAttribute();
 		secondModelAttribute.setName("registrationDate");
 		secondModelAttribute.setAttributeType(AttributeType.STRING);
 		secondModelAttribute.setDescription("atributo de fecha de alta");
@@ -64,7 +64,7 @@ public class CreateEntityExecution implements IExecution {
 		thirdModelAttribute.setAttributeType(AttributeType.STRING);
 		thirdModelAttribute.setDescription("atributo de observaciones");
 				
-		ModelObjectAttribute fourthModelAttribute = new ModelObjectAttribute();
+		ObjectAttribute fourthModelAttribute = new ObjectAttribute();
 		fourthModelAttribute.setName("contact1");
 		fourthModelAttribute.setSubtype("Contract");
 		fourthModelAttribute.setAttributeType(AttributeType.OBJECT);
@@ -101,7 +101,7 @@ public class CreateEntityExecution implements IExecution {
 		secondModel.setName("SystemRole");
 		secondModel.setDescription("Roles del Sistema");
 						
-		ModelObjectAttribute secondModelfirstAttribute = new ModelObjectAttribute();
+		ObjectAttribute secondModelfirstAttribute = new ObjectAttribute();
 		secondModelfirstAttribute.setName("id");
 		secondModelfirstAttribute.setAttributeType(AttributeType.INTEGER);
 		secondModelfirstAttribute.setDescription("clave del rol");
