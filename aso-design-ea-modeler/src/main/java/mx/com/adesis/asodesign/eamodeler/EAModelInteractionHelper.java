@@ -10,6 +10,7 @@ import org.sparx.ConnectorEnd;
 import org.sparx.Element;
 import org.sparx.Package;
 import org.sparx.Repository;
+import org.sparx.TaggedValue;
 
 @Slf4j
 public final class EAModelInteractionHelper {
@@ -64,6 +65,28 @@ public final class EAModelInteractionHelper {
 				+ " (ID=" + newTag.GetTagID() + ")" );
 		int newTagID = newTag.GetTagID();
 				
+	}
+	
+	/**
+	 * Crea un TagValue de un Elemento
+	 * @param tagName
+	 * @param tagValue
+	 * @param attribute
+	 */
+	public static void workOnElementTagValue(String tagName, String tagValue, Element element){
+		// ==================================================
+		// MANAGE ATTRIBUTE TAGGED VALUES
+		// ==================================================
+		// Add an attribute tag
+		Collection<TaggedValue> tags = element.GetTaggedValues();
+		//String tagName = "json-param-required";
+		TaggedValue newTag 
+				= tags.AddNew( tagName, tagValue );
+		newTag.Update();
+		tags.Refresh();
+		
+		log.debug( "Se agrega tag: " + newTag.GetName() 
+				+ " (ID=" + newTag.GetElementID() + ")" );
 	}
 	
 	/**

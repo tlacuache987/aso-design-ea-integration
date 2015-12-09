@@ -39,7 +39,7 @@ public class CreateEntityExecution implements IExecution {
 		}
 	}
 	
-	private void createAttributeFromNewElement(String projectFileWithPath){
+	private void createAttributeFromNewElement(String projectFileWithPath) {
 		
 		Model model = new Model();
 		model.setName("SystemUser");

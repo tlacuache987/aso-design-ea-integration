@@ -39,10 +39,13 @@ public class EAModelInteraction {
 				workOnNewEntity(rep, model, packageGUID);
 			}
 
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			log.error(e.getMessage(), e);
-		} finally
+			throw new RuntimeException(e);
+		} 
+		finally
 		{
 			if (rep != null)
 			{
@@ -71,9 +74,29 @@ public class EAModelInteraction {
 
 			if (thePackage != null && thePackage.GetParentID() != 0)
 			{
+				String modelName = model.getName();
+				if(modelName == null){
+					throw new RuntimeException("Nombre de la entidad no informado");
+				}
+				
+				
 				Element theElement = EAModelInteractionHelper.workOnNewElement(rep, thePackage, model.getName(),
 						model.getDescription(), "Class", null);
-
+				
+				
+				//Trabaja con tag values
+				if(model.getSchema() != null){
+						EAModelInteractionHelper.workOnElementTagValue("element-schema", model.getSchema(), theElement);
+				}
+				if(model.getType() != null){
+						EAModelInteractionHelper.workOnElementTagValue("element-type", model.getType(), theElement);
+				}
+				
+				List<IAttribute> attributes = model.getAttributes();
+				if(attributes == null || attributes.isEmpty()){
+					throw new RuntimeException("la entidad debe tener atributos");
+				}
+								
 				//Trabaja con atributos
 				for (IAttribute modelAttribute : model.getAttributes()) {
 					workOnEntityAttributes(rep, modelAttribute, theElement.GetElementID(), thePackage);
