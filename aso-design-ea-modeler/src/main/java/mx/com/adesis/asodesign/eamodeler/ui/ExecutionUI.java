@@ -15,6 +15,7 @@ import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URL;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -30,6 +31,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 
 
 
@@ -58,8 +60,12 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	private JLabel lblHeader;
 	
 	private JLabel lblFilePath;
+	private JLabel lblJSONFilePath;
+	
 	private File projectFile;
+	private File jsonSchemaFile;
 	private JButton cmdFilePathChooser;
+	private JButton cmdJSONFilePathChooser;
 	
 	private JLabel lblSelectExample;
 	private JList listSelectExample;
@@ -78,6 +84,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle( "Enterprise Architect Object Model" );
 		this.projectFile = new File("C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap");
+		this.jsonSchemaFile = new File("C:\\Temp\\raml\\schemas\\Participation.raml");
 		this.initComponents();
 	}
 	
@@ -105,6 +112,8 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		GridBagLayout gridBag = new GridBagLayout();
 		GridBagConstraints gridCon = new GridBagConstraints();
 		
+		inputPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		
 		Insets unrelatedInsets = new Insets(5, 5, 5, 5);
 		Insets relatedInsets = new Insets(5, 5, 0, 5);
 		
@@ -126,13 +135,23 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		this.updateFilePathLabel();
 		gridBag.setConstraints( this.lblFilePath, gridCon );
 		inputPanel.add( this.lblFilePath );
-				
+		
 		gridCon.weightx = 0.1;
 		gridCon.gridwidth = GridBagConstraints.REMAINDER;
 		this.cmdFilePathChooser = new JButton("...");
 		this.cmdFilePathChooser.addActionListener( this );
 		gridBag.setConstraints( this.cmdFilePathChooser, gridCon );
 		inputPanel.add( this.cmdFilePathChooser );
+		
+		this.lblJSONFilePath = new JLabel();
+		lblJSONFilePath.setText("Select JSON-SCHEMA File: ");
+		gridBag.setConstraints( this.lblJSONFilePath, gridCon );
+		inputPanel.add( this.lblJSONFilePath );
+		
+		this.cmdJSONFilePathChooser = new JButton("...");
+		this.cmdJSONFilePathChooser.addActionListener( this );
+		gridBag.setConstraints( this.cmdJSONFilePathChooser, gridCon );
+		inputPanel.add( this.cmdJSONFilePathChooser );
 	
 		//
 		// Select Example: Label, List and Description field
@@ -288,6 +307,14 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		this.lblFilePath.setText( "File Path: " + this.projectFile.getAbsolutePath() );
 	}
 	
+	/**
+	 * Updates the File Path label text
+	 */
+	private void updateJSONSchemaFilePathLabel()
+	{
+		this.lblJSONFilePath.setText( "JSON File Path: " + this.jsonSchemaFile.getAbsolutePath() );
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -313,6 +340,25 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 				this.updateFilePathLabel();
 			}
 		}
+		else if ( e.getSource() == this.cmdJSONFilePathChooser )
+		{
+			//
+			// File path chooser was clicked
+			//
+			
+			// Show the file chooser dialog
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.addChoosableFileFilter(null);
+			int returnValue = fileChooser.showOpenDialog( this );
+			
+			// If the action wasn't cancelled, then select the file and
+			// update the label
+			if ( returnValue == JFileChooser.APPROVE_OPTION )
+			{
+				this.jsonSchemaFile = fileChooser.getSelectedFile();
+				this.updateJSONSchemaFilePathLabel();
+			}
+		}
 		else if ( e.getSource() == this.cmdRunExample )
 		{
 			//
@@ -330,6 +376,16 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 				return;
 			}
 			
+			// Check the JSON-SCHEMA file exists
+			if ( !(this.jsonSchemaFile.exists() && !this.jsonSchemaFile.isDirectory()) )
+			{
+					String message = "The file '";
+					message += this.jsonSchemaFile.getAbsolutePath();
+					message += "' does not exist or is a directory.";
+					JOptionPane.showMessageDialog( this, message, "Invalid File", JOptionPane.ERROR_MESSAGE );
+					return;
+			}
+			
 			IExecution asIExample = 
 				(IExecution)this.listSelectExample.getSelectedValue();
 			
@@ -339,7 +395,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 				this.setCursor( Cursor.getPredefinedCursor( Cursor.WAIT_CURSOR ) );
 				
 				// Run the example
-				asIExample.runExample( this.projectFile, this );
+				asIExample.runProcess( this.projectFile, this.jsonSchemaFile, this );
 				
 				// Restore the cursor to the default
 				this.setCursor( Cursor.getDefaultCursor() );

@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
 import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
@@ -13,6 +16,7 @@ import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelArray
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelEnumAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
+import mx.com.adesis.asodesign.eaintegration.service.api.IModelService;
 import mx.com.adesis.asodesign.eamodeler.EAModelInteraction;
 import mx.com.adesis.asodesign.eamodeler.ui.ExecutionUI;
 
@@ -28,15 +32,21 @@ public class CreateEntityExecution implements IExecution {
 		return "Crea una entidad en EA apartir de un JSON Schema";
 	}
 
-	public void runExample(File projectFile, ExecutionUI uiFrame) {
+	public void runProcess(File projectFile, File jsonSchemaFile, ExecutionUI uiFrame) {
 		DefaultListModel outputList = uiFrame.getOutputListModel();
 		outputList.addElement("Comienza la ejecuci�n de la implementacion CreateEntityExecution... espere un momento");
 		try {
-			createAttributeFromNewElement(projectFile.getAbsolutePath());
+			createAttributeFromNewElement2(projectFile.getAbsolutePath());
 			outputList.addElement("Ejecuci�n terminada");
 		} catch (Exception e) {
 			outputList.addElement("ERROR: " + e.getMessage());
 		}
+	}
+	
+	private void createAttributeFromNewElement2(String projectFileWithPath) {
+		ApplicationContext appContext = 
+				new ClassPathXmlApplicationContext("classpath:/spring/eamodeler/asodesign-eamodeler-service-context.xml");
+		IModelService modelService = (IModelService) appContext.getBean("modelService");
 	}
 	
 	private void createAttributeFromNewElement(String projectFileWithPath) {
