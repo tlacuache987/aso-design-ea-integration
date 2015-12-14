@@ -8,6 +8,7 @@ import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelEnumAttribute;
 import mx.com.adesis.jsonschema.JsonSchema;
+import mx.com.adesis.jsonschema.JsonSchemaOneOfPropertyDefinition;
 import mx.com.adesis.jsonschema.JsonSchemaProperty;
 import mx.com.adesis.jsonschema.JsonSchemaPropertyDefinition;
 import mx.com.adesis.jsonschema.service.api.IJsonSchemaToModelConverter;
@@ -108,7 +109,48 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 	}
 
 	private ModelAtributeType calculateAttributeType(JsonSchemaProperty jsp) {
-		// TODO Auto-generated method stub
-		return ModelAtributeType.IS_ENUM;
+		final JsonSchemaPropertyDefinition def = jsp.getDefinition();
+
+		/*if (def.isEnumType())
+			return ModelAtributeType.IS_ENUM;*/
+
+		if (def.hasType()) {
+			switch (def.getType().getValue()) {
+			case ARRAY:
+				return ModelAtributeType.IS_ARRAY;
+			case OBJECT:
+				if (def.isOneOf()) {
+					JsonSchemaOneOfPropertyDefinition oneOfPropDef = def.getOneOf().getValue().get(0);
+					if (oneOfPropDef.hasRef())
+						return ModelAtributeType.IS_INTERFACE;
+				}
+				return ModelAtributeType.IS_OBJECT;
+			case BOOLEAN:
+			case INTEGER:
+			case NUMBER:
+			case STRING:
+				return ModelAtributeType.IS_OBJECT;
+			default:
+				return null;
+			}
+
+		} else {
+			if (def.isEnumType())
+				return ModelAtributeType.IS_ENUM;
+
+			if (def.hasItems())
+				return ModelAtributeType.IS_ARRAY;
+
+			if (def.hasRef())
+				return ModelAtributeType.IS_OBJECT;
+
+			if (def.isOneOf()) {
+				JsonSchemaOneOfPropertyDefinition oneOfPropDef = def.getOneOf().getValue().get(0);
+				if (oneOfPropDef.hasRef())
+					return ModelAtributeType.IS_INTERFACE;
+				return ModelAtributeType.IS_OBJECT;
+			}
+			return ModelAtributeType.IS_OBJECT;
+		}
 	}
 }
