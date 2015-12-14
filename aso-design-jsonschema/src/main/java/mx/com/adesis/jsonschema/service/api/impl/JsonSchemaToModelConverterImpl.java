@@ -55,6 +55,12 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 				case IS_ENUM:
 					attribute = processEnum(jsp);
 					break;
+				case IS_ARRAY:
+					break;
+				case IS_INTERFACE:
+					break;
+				case IS_OBJECT:
+					break;
 
 				default:
 					attribute = null;
