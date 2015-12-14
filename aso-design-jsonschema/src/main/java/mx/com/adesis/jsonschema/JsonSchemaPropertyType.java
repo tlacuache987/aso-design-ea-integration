@@ -1,7 +1,7 @@
 package mx.com.adesis.jsonschema;
 
 public enum JsonSchemaPropertyType {
-	ARRAY("array"), BOOLEAN("boolean"), INTEGER("integer"), NUMBER("number"), NULL("null"), OBJECT(
+	ARRAY("array"), BOOLEAN("boolean"), INTEGER("integer"), NUMBER("number"), OBJECT(
 			"object"), STRING("string");
 
 	private String enumValue;

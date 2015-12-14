@@ -398,8 +398,8 @@ public class JsonSchemaBuilder {
 		if (string != null && string.equalsIgnoreCase("string"))
 			return JsonSchemaPropertyType.STRING;
 
-		if (string != null && string.equalsIgnoreCase("null"))
-			return JsonSchemaPropertyType.NULL;
+		/*if (string != null && string.equalsIgnoreCase("null"))
+			return JsonSchemaPropertyType.NULL;*/
 
 		if (string != null && string.equalsIgnoreCase("number"))
 			return JsonSchemaPropertyType.NUMBER;
