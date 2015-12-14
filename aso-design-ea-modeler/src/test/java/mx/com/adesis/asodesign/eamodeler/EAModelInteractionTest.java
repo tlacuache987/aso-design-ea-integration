@@ -17,8 +17,8 @@ import org.junit.Test;
 
 public class EAModelInteractionTest {
 
-	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseï¿½o\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
-	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseï¿½o\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
+	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
+	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
 
 	@Test
 	@Ignore
@@ -27,6 +27,8 @@ public class EAModelInteractionTest {
 		Model model = new Model();
 		model.setName("SystemUser");
 		model.setDescription("Usuario del Sistema");
+		model.setSchema("http://json-schema.org/draft-04/schema#");
+		model.setType("object");
 
 		EAModelInteraction modifyModel = new EAModelInteraction();
 
