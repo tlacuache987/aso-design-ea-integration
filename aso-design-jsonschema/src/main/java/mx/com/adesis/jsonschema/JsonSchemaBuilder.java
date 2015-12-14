@@ -322,7 +322,8 @@ public class JsonSchemaBuilder {
 
 	private JsonSchemaItemPropertyDefinition processItems2(HashMap<String, Object> map) {
 
-		JsonSchemaItemPropertyDefinition jsonSchemaItemPropertyDefinition = null;
+		JsonSchemaItemPropertyDefinition jsonSchemaItemPropertyDefinition = new JsonSchemaItemPropertyDefinition();
+		;
 
 		final Set<String> keySet = map.keySet();
 
@@ -330,12 +331,13 @@ public class JsonSchemaBuilder {
 
 			final JsonSchemaValueType jsonSchemaType = getType(map.get(key));
 
+			System.out.println("KEYYYY: " + jsonSchemaType + " key: " + key);
+
 			switch (jsonSchemaType) {
 			case STRING_VALUE:
+			case OBJECT_VALUE:
 
 				if (key.equalsIgnoreCase("type")) {
-					jsonSchemaItemPropertyDefinition = new JsonSchemaItemPropertyDefinition();
-
 					jsonSchemaItemPropertyDefinition.setType(new JsonSchemaKeyValuePair<JsonSchemaPropertyType>());
 					jsonSchemaItemPropertyDefinition.getType().setKey("type");
 
@@ -345,15 +347,16 @@ public class JsonSchemaBuilder {
 				}
 
 				if (key.equalsIgnoreCase("description")) {
-					jsonSchemaItemPropertyDefinition = new JsonSchemaItemPropertyDefinition();
-
 					jsonSchemaItemPropertyDefinition.setDescription(new JsonSchemaKeyValuePair<String>());
 					jsonSchemaItemPropertyDefinition.getDescription().setKey("description");
 					jsonSchemaItemPropertyDefinition.getDescription().setValue((String) map.get("description"));
 				}
 
-				break;
-			case OBJECT_VALUE:
+				if (key.equalsIgnoreCase("$ref")) {
+					jsonSchemaItemPropertyDefinition.setRef(new JsonSchemaKeyValuePair<String>());
+					jsonSchemaItemPropertyDefinition.getRef().setKey("$ref");
+					jsonSchemaItemPropertyDefinition.getRef().setValue((String) map.get("$ref"));
+				}
 				break;
 			}
 		}
@@ -367,9 +370,6 @@ public class JsonSchemaBuilder {
 
 		if (string != null && string.equalsIgnoreCase("string"))
 			return JsonSchemaPropertyType.STRING;
-
-		/*if (string != null && string.equalsIgnoreCase("null"))
-			return JsonSchemaPropertyType.NULL;*/
 
 		if (string != null && string.equalsIgnoreCase("number"))
 			return JsonSchemaPropertyType.NUMBER;

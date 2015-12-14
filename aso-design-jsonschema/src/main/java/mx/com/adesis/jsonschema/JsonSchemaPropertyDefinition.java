@@ -17,7 +17,6 @@ public class JsonSchemaPropertyDefinition {
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> description; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> format; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<List<JsonSchemaOneOfPropertyDefinition>> oneOf; //ya
-	//private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<List<JsonSchemaItem>> items; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<JsonSchemaItemPropertyDefinition> items; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Integer> minItems; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Boolean> uniqueItems; //ya
