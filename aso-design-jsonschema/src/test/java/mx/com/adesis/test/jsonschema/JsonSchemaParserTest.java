@@ -87,11 +87,10 @@ public class JsonSchemaParserTest {
 						log.info("\t\tEs array");
 
 						if (jsp.getDefinition().hasItems()) {
-							for (JsonSchemaItemPropertyDefinition item : jsp.getDefinition().getItems().getValue()) {
 
-								if (item.hasType())
-									log.info("\t\t\tEl tipo del array es: {}", item.getType().getValue().getEnumValue());
-							}
+							JsonSchemaItemPropertyDefinition item = jsp.getDefinition().getItems().getValue();
+							if (item.hasType())
+								log.info("\t\t\tEl tipo del array es: {}", item.getType().getValue().getEnumValue());
 						}
 						continue;
 					}
