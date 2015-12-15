@@ -83,7 +83,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle( "Enterprise Architect Object Model" );
-		this.projectFile = new File("C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap");
+		this.projectFile = new File("C:\\proyectos\\proyecto_ASO_multicanal\\diseÃ±o\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap");
 		this.jsonSchemaFile = new File("C:\\Temp\\raml\\schemas\\Participation.raml");
 		this.initComponents();
 	}

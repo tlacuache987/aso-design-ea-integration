@@ -4,10 +4,13 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-	<context:component-scan base-package="mx.com.adesis.jsonschema.service.api.impl" />
+	<context:component-scan base-package="mx.com.adesis" />
+	
+	<bean id="customResourceLoader"
+		class="mx.com.adesis.asodesign.eamodeler.execution.CustomResourceLoader" />
 
 	<bean id="modelService"
-		class="mx.com.adesis.asodesign.eaintegration.service.api.impl.ModelService" />
+		class="mx.com.adesis.asodesign.eaintegration.service.api.impl.ModelServiceImpl" />
 
 	<bean class="mx.com.adesis.jsonschema.service.api.impl.JsonSchemaServiceImpl">
 		<lookup-method name="getJsonSchemaBuilder" bean="jsonSchemaBuilder" />

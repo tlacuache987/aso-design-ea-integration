@@ -1,6 +1,11 @@
 package mx.com.adesis.asodesign.eamodeler.execution;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +13,7 @@ import javax.swing.DefaultListModel;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
 
 import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
 import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
@@ -34,19 +40,47 @@ public class CreateEntityExecution implements IExecution {
 
 	public void runProcess(File projectFile, File jsonSchemaFile, ExecutionUI uiFrame) {
 		DefaultListModel outputList = uiFrame.getOutputListModel();
-		outputList.addElement("Comienza la ejecuci�n de la implementacion CreateEntityExecution... espere un momento");
+		outputList.addElement("Comienza la ejecución de la implementacion CreateEntityExecution... espere un momento");
 		try {
-			createAttributeFromNewElement2(projectFile.getAbsolutePath());
-			outputList.addElement("Ejecuci�n terminada");
+			createAttributeFromNewElement2(jsonSchemaFile.getAbsolutePath(), uiFrame);
+			outputList.addElement("Ejecución terminada");
 		} catch (Exception e) {
-			outputList.addElement("ERROR: " + e.getMessage());
+			throw new RuntimeException(e);
 		}
 	}
 	
-	private void createAttributeFromNewElement2(String projectFileWithPath) {
+
+	private void createAttributeFromNewElement2(String projectFileWithPath, ExecutionUI uiFrame) throws RuntimeException {
+		
+		DefaultListModel outputList = uiFrame.getOutputListModel();
+		
 		ApplicationContext appContext = 
 				new ClassPathXmlApplicationContext("classpath:/spring/eamodeler/asodesign-eamodeler-service-context.xml");
 		IModelService modelService = (IModelService) appContext.getBean("modelService");
+		
+		//se lee el arhivo con el contentenido de JSON Schema
+		CustomResourceLoader cust = 
+		           (CustomResourceLoader) appContext.getBean("customResourceLoader");
+		    	
+		Resource resource = cust.getResource("file:" + projectFileWithPath);
+		
+		StringBuffer JSONSchemaStr = new StringBuffer();
+		try{
+			InputStream is = resource.getInputStream();
+		    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		        	
+		          String line;
+		          while ((line = br.readLine()) != null) {
+		        	  JSONSchemaStr.append(line);
+		        	  outputList.addElement(line);
+		          } 
+		          br.close();
+		        	
+		} catch(IOException e){
+		    	throw new RuntimeException(e);
+		}
+			
+		//modelService.getModel(JSONSchemaStr.toString());
 	}
 	
 	private void createAttributeFromNewElement(String projectFileWithPath) {
@@ -84,7 +118,7 @@ public class CreateEntityExecution implements IExecution {
 				
 		ModelEnumAttribute fifthModelAttribute = new ModelEnumAttribute();
 		fifthModelAttribute.setName("operationType");
-		fifthModelAttribute.setDescription("tipo de operaci�n");
+		fifthModelAttribute.setDescription("tipo de operación");
 		List<String> enumValues = new ArrayList<String>();
 		enumValues.add(0, "TRASPASO");
 		enumValues.add(1, "CONSULTA");
