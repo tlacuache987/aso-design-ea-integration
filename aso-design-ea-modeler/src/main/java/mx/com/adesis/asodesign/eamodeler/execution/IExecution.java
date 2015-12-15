@@ -30,6 +30,6 @@ public interface IExecution
 	/**
 	 * Runs this example with the specified project file, outputing results to outputList
 	 */
-	public abstract void runExample( File projectFile, ExecutionUI uiFrame );
+	public abstract void runProcess( File projectFile,  File JsonSchemaFile, ExecutionUI uiFrame );
 	
 }
