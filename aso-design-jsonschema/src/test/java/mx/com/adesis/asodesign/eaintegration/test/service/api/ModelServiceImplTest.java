@@ -30,6 +30,8 @@ public class ModelServiceImplTest {
 	public void testA() {
 		log.info("inicia testA ---------------------------------");
 
+		//IModel model = modelService.getModel(JsonSchemaString.JSON_SCHEMA_AS_STRING);
+
 		IModel model = modelService.getModel(JsonSchemaString.JSON_SCHEMA_AS_STRING);
 
 		System.out.println("model: " + model);

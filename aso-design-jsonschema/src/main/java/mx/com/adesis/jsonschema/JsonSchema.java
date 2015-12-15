@@ -12,7 +12,8 @@ public class JsonSchema {
 	private JsonSchemaKeyValuePair<String> description; //ya
 	private JsonSchemaKeyValuePair<JsonSchemaProperties> properties; //ya
 	private JsonSchemaKeyValuePair<List<String>> required;
-	private JsonSchemaKeyValuePair<JsonSchemaDependencies> dependencies;
+
+	//private JsonSchemaKeyValuePair<JsonSchemaDependencies> dependencies;
 
 	public boolean hasSchema() {
 		return schema != null ? true : false;
@@ -41,9 +42,9 @@ public class JsonSchema {
 				: false;
 	}
 
-	public boolean hasDependencies() {
+	/*public boolean hasDependencies() {
 		return dependencies != null ? true : false;
-	}
+	}*/
 
 	JsonSchema() {
 	}
@@ -59,7 +60,7 @@ public class JsonSchema {
 				append("\tdescription = ").append(this.description).append("\n").
 				append("\tproperties = ").append(this.properties).append("\n").
 				append("\trequired = ").append(this.required).append("\n").
-				append("\tdependencies = ").append(this.dependencies).append("\n").
+				//append("\tdependencies = ").append(this.dependencies).append("\n").
 				append(")");
 
 		return sb.toString();

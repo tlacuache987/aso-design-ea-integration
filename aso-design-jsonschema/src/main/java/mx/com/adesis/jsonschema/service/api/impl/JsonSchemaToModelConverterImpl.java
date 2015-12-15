@@ -9,6 +9,7 @@ import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelArrayAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelEnumAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelInterfaceAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 import mx.com.adesis.jsonschema.JsonSchema;
 import mx.com.adesis.jsonschema.JsonSchemaItemPropertyDefinition;
@@ -68,6 +69,7 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 					attribute = processInterface(jsp);
 					break;
 				case IS_OBJECT:
+					attribute = processObject(jsp);
 					break;
 
 				default:
@@ -84,6 +86,48 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 		model.setAttributes(attributeList);
 
 		return model;
+	}
+
+	private IAttribute processObject(JsonSchemaProperty jsp) {
+
+		final ModelObjectAttribute attribute = new ModelObjectAttribute();
+
+		final JsonSchemaPropertyDefinition definition = jsp.getDefinition();
+
+		if (jsp.getName() != null && jsp.getName().length() > 0) {
+			attribute.setName(jsp.getName());
+			attribute.setSubtype(StringUtils.toUpperCamelCase(jsp.getName()));
+		}
+
+		if (definition.isOneOf()) {
+			List<JsonSchemaOneOfPropertyDefinition> jsonSchemaOneOfPropertyDefinitionList = definition.getOneOf()
+					.getValue();
+
+			List<String> resources = new ArrayList<String>();
+
+			for (JsonSchemaOneOfPropertyDefinition jsoop : jsonSchemaOneOfPropertyDefinitionList) {
+				resources.add(jsoop.getRef().getValue());
+			}
+
+			attribute.setResources(resources);
+
+		}
+
+		if (definition.hasDescription())
+			attribute.setDescription(definition.getDescription().getValue());
+
+		if (definition.hasFormat())
+			attribute.setFormat(definition.getFormat().getValue());
+
+		if (definition.isReadonly())
+			attribute.setReadOnly(definition.getReadonly().getValue());
+
+		if (definition.isRequired())
+			attribute.setRequired(definition.getRequired().getValue());
+
+		//Falta set pattern
+
+		return attribute;
 	}
 
 	private IAttribute processInterface(JsonSchemaProperty jsp) {

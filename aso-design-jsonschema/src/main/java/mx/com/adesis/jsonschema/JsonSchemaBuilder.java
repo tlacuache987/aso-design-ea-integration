@@ -323,7 +323,6 @@ public class JsonSchemaBuilder {
 	private JsonSchemaItemPropertyDefinition processItems2(HashMap<String, Object> map) {
 
 		JsonSchemaItemPropertyDefinition jsonSchemaItemPropertyDefinition = new JsonSchemaItemPropertyDefinition();
-		;
 
 		final Set<String> keySet = map.keySet();
 
