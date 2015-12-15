@@ -32,7 +32,7 @@ public class ModelServiceImplTest {
 
 		//IModel model = modelService.getModel(JsonSchemaString.JSON_SCHEMA_AS_STRING);
 
-		IModel model = modelService.getModel(JsonSchemaString.JSON_SCHEMA_AS_STRING);
+		IModel model = modelService.getModel(JsonSchemaString.JSON_SCHEMA_CHAFA_DE_JORGE);
 
 		System.out.println("model: " + model);
 

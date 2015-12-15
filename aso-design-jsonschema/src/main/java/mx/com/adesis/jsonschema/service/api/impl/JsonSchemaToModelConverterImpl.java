@@ -99,7 +99,7 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 			attribute.setSubtype(StringUtils.toUpperCamelCase(jsp.getName()));
 		}
 
-		if (definition.isOneOf()) {
+		/*if (definition.isOneOf()) {
 			List<JsonSchemaOneOfPropertyDefinition> jsonSchemaOneOfPropertyDefinitionList = definition.getOneOf()
 					.getValue();
 
@@ -109,9 +109,9 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 				resources.add(jsoop.getRef().getValue());
 			}
 
-			attribute.setResources(resources);
+			//attribute.setResources(resources);
 
-		}
+		}*/
 
 		if (definition.hasDescription())
 			attribute.setDescription(definition.getDescription().getValue());

@@ -30,7 +30,7 @@ public class JsonSchemaServiceImplTest {
 	public void testA() {
 		log.info("inicia testA ---------------------------------");
 
-		JsonSchema jsonSchema = jsonSchemaService.getJsonSchema(JsonSchemaString.JSON_SCHEMA_AS_STRING);
+		JsonSchema jsonSchema = jsonSchemaService.getJsonSchema(JsonSchemaString.JSON_SCHEMA_CHAFA_DE_JORGE);
 
 		System.out.println("jsonSchema: " + jsonSchema);
 
