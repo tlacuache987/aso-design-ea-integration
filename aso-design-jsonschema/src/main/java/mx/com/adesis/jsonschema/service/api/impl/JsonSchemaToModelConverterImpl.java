@@ -6,12 +6,18 @@ import java.util.List;
 import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
 import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelArrayAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelEnumAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelInterfaceAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 import mx.com.adesis.jsonschema.JsonSchema;
+import mx.com.adesis.jsonschema.JsonSchemaItemPropertyDefinition;
 import mx.com.adesis.jsonschema.JsonSchemaOneOfPropertyDefinition;
 import mx.com.adesis.jsonschema.JsonSchemaProperty;
 import mx.com.adesis.jsonschema.JsonSchemaPropertyDefinition;
+import mx.com.adesis.jsonschema.JsonSchemaPropertyType;
 import mx.com.adesis.jsonschema.service.api.IJsonSchemaToModelConverter;
+import mx.com.adesis.jsonschema.util.StringUtils;
 
 import org.springframework.stereotype.Component;
 
@@ -56,8 +62,10 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 					attribute = processEnum(jsp);
 					break;
 				case IS_ARRAY:
+					attribute = processArray(jsp);
 					break;
 				case IS_INTERFACE:
+					attribute = processInterface(jsp);
 					break;
 				case IS_OBJECT:
 					break;
@@ -78,6 +86,99 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 		return model;
 	}
 
+	private IAttribute processInterface(JsonSchemaProperty jsp) {
+
+		final ModelInterfaceAttribute attribute = new ModelInterfaceAttribute();
+
+		final JsonSchemaPropertyDefinition definition = jsp.getDefinition();
+
+		if (jsp.getName() != null && jsp.getName().length() > 0) {
+			attribute.setName(jsp.getName());
+			attribute.setSubtype(StringUtils.toUpperCamelCase(jsp.getName()));
+		}
+
+		if (definition.isOneOf()) {
+			List<JsonSchemaOneOfPropertyDefinition> jsonSchemaOneOfPropertyDefinitionList = definition.getOneOf()
+					.getValue();
+
+			List<String> resources = new ArrayList<String>();
+
+			for (JsonSchemaOneOfPropertyDefinition jsoop : jsonSchemaOneOfPropertyDefinitionList) {
+				resources.add(jsoop.getRef().getValue());
+			}
+
+			attribute.setResources(resources);
+
+		}
+
+		if (definition.hasDescription())
+			attribute.setDescription(definition.getDescription().getValue());
+
+		if (definition.hasFormat())
+			attribute.setFormat(definition.getFormat().getValue());
+
+		if (definition.isReadonly())
+			attribute.setReadOnly(definition.getReadonly().getValue());
+
+		if (definition.isRequired())
+			attribute.setRequired(definition.getRequired().getValue());
+
+		//Falta set pattern
+
+		return attribute;
+	}
+
+	private IAttribute processArray(JsonSchemaProperty jsp) {
+
+		final ModelArrayAttribute attribute = new ModelArrayAttribute();
+
+		final JsonSchemaPropertyDefinition definition = jsp.getDefinition();
+
+		if (jsp.getName() != null && jsp.getName().length() > 0) {
+			attribute.setName(jsp.getName());
+			//attribute.setSubtype(StringUtils.toUpperCamelCase(jsp.getName()));
+		}
+
+		if (definition.hasItems()) {
+			JsonSchemaItemPropertyDefinition jsonSchemaItemPropertyDefinition = definition.getItems().getValue();
+
+			System.out.println("jsonSchemaItemPropertyDefinition: " + jsonSchemaItemPropertyDefinition);
+			JsonSchemaPropertyType itemPropertytype = jsonSchemaItemPropertyDefinition.getType().getValue();
+
+			attribute.setAttributeType(calculateAtributeType(itemPropertytype));
+
+			if (jsonSchemaItemPropertyDefinition.hasRef()) {
+				System.out.println("SI TIENE REF");
+				attribute.setAttributeType(AttributeType.OBJECT);
+				attribute
+						.setSubtype(StringUtils.toUpperCamelCase(jsonSchemaItemPropertyDefinition.getRef().getValue()));
+			}
+
+		}
+
+		if (definition.hasDescription())
+			attribute.setDescription(definition.getDescription().getValue());
+
+		if (definition.hasMinItems())
+			attribute.setMinItems(definition.getMinItems().getValue());
+
+		if (definition.hasUniqueItems())
+			attribute.setUniqueItems(definition.getUniqueItems().getValue());
+
+		if (definition.hasFormat())
+			attribute.setFormat(definition.getFormat().getValue());
+
+		if (definition.isReadonly())
+			attribute.setReadOnly(definition.getReadonly().getValue());
+
+		if (definition.isRequired())
+			attribute.setRequired(definition.getRequired().getValue());
+
+		//Falta set pattern
+
+		return attribute;
+	}
+
 	private IAttribute processEnum(JsonSchemaProperty jsp) {
 
 		final ModelEnumAttribute attribute = new ModelEnumAttribute();
@@ -86,7 +187,6 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 
 		if (jsp.getName() != null && jsp.getName().length() > 0) {
 			attribute.setName(jsp.getName());
-			attribute.setSubtype(jsp.getName().substring(0, 1).toUpperCase() + jsp.getName().substring(1));
 		}
 
 		if (definition.hasDescription())
@@ -98,6 +198,11 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 				enumValues.add(value);
 			}
 			attribute.setEnumValues(enumValues);
+
+			if (jsp.getName() != null && jsp.getName().length() > 0) {
+				attribute.setSubtype(StringUtils.toUpperCamelCase(jsp.getName()));
+			}
+
 		}
 
 		if (definition.hasFormat())
@@ -112,6 +217,24 @@ public class JsonSchemaToModelConverterImpl implements IJsonSchemaToModelConvert
 		//Falta set pattern
 
 		return attribute;
+	}
+
+	private AttributeType calculateAtributeType(JsonSchemaPropertyType itemPropertytype) {
+		switch (itemPropertytype) {
+		case ARRAY:
+			return AttributeType.OBJECT;
+		case STRING:
+			return AttributeType.STRING;
+		case BOOLEAN:
+			return AttributeType.BOOLEAN;
+		case INTEGER:
+			return AttributeType.INTEGER;
+		case NUMBER:
+			return AttributeType.NUMBER;
+		case OBJECT:
+			return AttributeType.OBJECT;
+		}
+		return null;
 	}
 
 	private ModelAtributeType calculateAttributeType(JsonSchemaProperty jsp) {

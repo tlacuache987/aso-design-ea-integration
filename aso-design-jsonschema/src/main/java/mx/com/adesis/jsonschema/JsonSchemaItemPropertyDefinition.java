@@ -10,10 +10,15 @@ import lombok.Setter;
 @Data
 public class JsonSchemaItemPropertyDefinition {
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<JsonSchemaPropertyType> type;
+	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> ref;
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> description;
 
 	public boolean hasType() {
 		return type != null ? true : false;
+	}
+
+	public boolean hasRef() {
+		return ref != null ? true : false;
 	}
 
 	public boolean hasDescription() {
@@ -30,6 +35,12 @@ public class JsonSchemaItemPropertyDefinition {
 
 		if (hasType()) {
 			sb.append("type = ").append(this.type);
+			attributes.add(sb.toString());
+			sb.setLength(0);
+		}
+
+		if (hasRef()) {
+			sb.append("$ref = ").append(this.ref);
 			attributes.add(sb.toString());
 			sb.setLength(0);
 		}

@@ -1,10 +1,14 @@
 package mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IArrayAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class ModelArrayAttribute extends ModelAttribute implements IArrayAttribute {
 	private AttributeType attributeType;
 	private Integer minItems;

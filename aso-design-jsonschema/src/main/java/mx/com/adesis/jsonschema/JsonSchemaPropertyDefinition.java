@@ -17,8 +17,7 @@ public class JsonSchemaPropertyDefinition {
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> description; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<String> format; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<List<JsonSchemaOneOfPropertyDefinition>> oneOf; //ya
-	//private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<List<JsonSchemaItem>> items; //ya
-	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<List<JsonSchemaItemPropertyDefinition>> items; //ya
+	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<JsonSchemaItemPropertyDefinition> items; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Integer> minItems; //ya
 	private @Setter(AccessLevel.PACKAGE) JsonSchemaKeyValuePair<Boolean> uniqueItems; //ya
 
@@ -60,7 +59,7 @@ public class JsonSchemaPropertyDefinition {
 	}
 
 	public boolean hasItems() {
-		return items != null && items.getValue() != null && items.getValue() != null && items.getValue().size() > 0 ? true
+		return items != null && items.getValue() != null ? true
 				: false;
 	}
 

@@ -9,7 +9,7 @@ import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelArrayAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelEnumAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelInterfaceAttribute;
-import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ObjectAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 
 import org.junit.Ignore;
@@ -17,8 +17,8 @@ import org.junit.Test;
 
 public class EAModelInteractionTest {
 
-	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
-	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
+	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseï¿½o\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
+	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseï¿½o\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
 
 	@Test
 	@Ignore
@@ -32,13 +32,13 @@ public class EAModelInteractionTest {
 
 		EAModelInteraction modifyModel = new EAModelInteraction();
 
-		ObjectAttribute modelAttribute = new ObjectAttribute();
+		ModelObjectAttribute modelAttribute = new ModelObjectAttribute();
 		modelAttribute.setName("nameJOG2");
 		modelAttribute.setAttributeType(AttributeType.STRING);
 		modelAttribute.setDescription("atributo de nombre");
 		modelAttribute.setRequired(true);
 
-		ObjectAttribute secondModelAttribute = new ObjectAttribute();
+		ModelObjectAttribute secondModelAttribute = new ModelObjectAttribute();
 		secondModelAttribute.setName("registrationDate");
 		secondModelAttribute.setAttributeType(AttributeType.DATE);
 		secondModelAttribute.setDescription("atributo de fecha de alta");
@@ -51,7 +51,7 @@ public class EAModelInteractionTest {
 		thirdModelAttribute.setMinItems(1);
 		thirdModelAttribute.setUniqueItems(true);
 
-		ObjectAttribute fourthModelAttribute = new ObjectAttribute();
+		ModelObjectAttribute fourthModelAttribute = new ModelObjectAttribute();
 		fourthModelAttribute.setName("contact1");
 		fourthModelAttribute.setSubtype("Contract");
 		fourthModelAttribute.setAttributeType(AttributeType.OBJECT);
@@ -74,7 +74,7 @@ public class EAModelInteractionTest {
 		sixthModelAttribute.setDescription("lista de participantes");
 		sixthModelAttribute.setSubtype("Participant");
 
-		ObjectAttribute seventhModelAttribute = new ObjectAttribute();
+		ModelObjectAttribute seventhModelAttribute = new ModelObjectAttribute();
 		seventhModelAttribute.setName("server");
 		seventhModelAttribute.setAttributeType(AttributeType.OBJECT);
 		seventhModelAttribute.setSubtype("Server");
@@ -108,7 +108,7 @@ public class EAModelInteractionTest {
 		secondModel.setName("SystemRole");
 		secondModel.setDescription("Roles del Sistema");
 
-		ObjectAttribute secondModelfirstAttribute = new ObjectAttribute();
+		ModelObjectAttribute secondModelfirstAttribute = new ModelObjectAttribute();
 		secondModelfirstAttribute.setName("id");
 		secondModelfirstAttribute.setAttributeType(AttributeType.INTEGER);
 		secondModelfirstAttribute.setDescription("clave del rol");

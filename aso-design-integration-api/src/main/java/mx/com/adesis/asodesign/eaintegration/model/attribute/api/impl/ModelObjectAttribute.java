@@ -3,11 +3,15 @@ package mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl;
 import java.util.List;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
 
 @Data
-public class ObjectAttribute extends ModelAttribute implements IObjectAttribute {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class ModelObjectAttribute extends ModelAttribute implements IObjectAttribute {
 	private AttributeType attributeType;
 	private List<String> allowedValues;
 
