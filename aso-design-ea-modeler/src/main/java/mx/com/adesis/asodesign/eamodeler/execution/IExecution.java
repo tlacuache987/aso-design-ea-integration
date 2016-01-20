@@ -30,6 +30,11 @@ public interface IExecution
 	/**
 	 * Runs this example with the specified project file, outputing results to outputList
 	 */
-	public abstract void runProcess( File projectFile,  File JsonSchemaFile, ExecutionUI uiFrame );
+	public abstract void runProcess( File projectFile,  File JsonSchemaFile, ExecutionUI uiFrame, String elementGuid );
+	
+	/**
+	 *  Open a window to set Process Parameters 
+	 */
+	public abstract boolean openWindow();
 	
 }

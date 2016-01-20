@@ -38,7 +38,7 @@ public class CreateEntityExecution implements IExecution {
 		return "Crea una entidad en EA apartir de un JSON Schema";
 	}
 
-	public void runProcess(File projectFile, File jsonSchemaFile, ExecutionUI uiFrame) {
+	public void runProcess(File projectFile, File jsonSchemaFile, ExecutionUI uiFrame, String guid) {
 		DefaultListModel outputList = uiFrame.getOutputListModel();
 		outputList.addElement("Comienza la ejecución de la implementacion CreateEntityExecution... espere un momento");
 		try {
@@ -65,8 +65,16 @@ public class CreateEntityExecution implements IExecution {
 		Resource resource = cust.getResource("file:" + projectFileWithPath);
 		
 		StringBuffer JSONSchemaStr = new StringBuffer();
+		InputStream is = null;
+		IModel model = null;
 		try{
-			InputStream is = resource.getInputStream();
+			is = resource.getInputStream();
+			
+			model = modelService.getModel(is);
+			outputList.addElement("SALIDA: " + model);
+			
+			is = resource.getInputStream();
+			
 		    BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		        	
 		          String line;
@@ -78,9 +86,14 @@ public class CreateEntityExecution implements IExecution {
 		        	
 		} catch(IOException e){
 		    	throw new RuntimeException(e);
-		}
-			
-		//modelService.getModel(JSONSchemaStr.toString());
+		}		
+		
+		EAModelInteraction modifyModel = new EAModelInteraction();
+		
+		List models = new ArrayList<IModel>();
+		models.add(model);
+		
+		modifyModel.workOnEntityList(projectFileWithPath, models, "{98F20947-C2FF-40bb-B815-7F1972040190}");
 	}
 	
 	private void createAttributeFromNewElement(String projectFileWithPath) {
@@ -162,6 +175,11 @@ public class CreateEntityExecution implements IExecution {
 		
 		modifyModel.workOnEntityList(projectFileWithPath, models, "{98F20947-C2FF-40bb-B815-7F1972040190}");
 		
+	}
+
+	@Override
+	public boolean openWindow() {
+		return false;
 	}
 	
 	

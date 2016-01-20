@@ -1,13 +1,18 @@
 package mx.com.adesis.asodesign.eamodeler;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
+import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IArrayAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IEnumAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IInterfaceAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelObjectAttribute;
 
 import org.sparx.Attribute;
 import org.sparx.Collection;
@@ -220,5 +225,45 @@ public class EAModelInteraction {
 			throw e;
 		}
 	}
+	
+	/**
+	 * Crea una lista de entidades
+	 * 
+	 * @param eapFile
+	 * @param models
+	 * @param packageGUID
+	 */
+	public List<String> getDuplicateEntitiesNames(String eapFile) {
+		Repository rep = null;
+		
+		List<String> entitiesDuplicatedList = null;
+		log.debug("iniciando proceso de encontrar duplicidades de entidades ...");
+		try
+		{
+			// Create a repository object - This will create a new instance of EA
+			rep = new Repository();
+			rep.OpenFile(eapFile);
 
+			entitiesDuplicatedList = EAModelInteractionHelper.getDuplicateEntitiesNames(rep);
+			
+		} 
+		catch (Exception e)
+		{
+			log.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		} 
+		finally
+		{
+			if (rep != null)
+			{
+				// Clean up
+				rep.CloseFile();
+				rep.Exit();
+				rep.destroy();
+			}
+		}
+		return entitiesDuplicatedList;
+	}
+	
+	
 }

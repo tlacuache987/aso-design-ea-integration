@@ -4,19 +4,29 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URL;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -27,17 +37,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-
-
-
-
+import mx.com.adesis.asodesign.eamodeler.execution.CreateAllEntitiesSpreadsheetExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.CreateEntityExecution;
+import mx.com.adesis.asodesign.eamodeler.execution.CreateEntityMappingExecution;
+import mx.com.adesis.asodesign.eamodeler.execution.GetDuplicatedEntitiesExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.IExecution;
+import mx.com.adesis.asodesign.eamodeler.execution.ModelDifferencesExecution;
 import sun.misc.Launcher;
 
 /**
@@ -45,7 +56,7 @@ import sun.misc.Launcher;
  * select various example from the list and see their description, and run the examples and view
  * the output.
  */
-public class ExecutionUI extends JFrame implements ActionListener, ListSelectionListener, HyperlinkListener
+public class ExecutionUI extends JFrame implements ActionListener, ListSelectionListener, HyperlinkListener, WindowListener
 {	
 	//----------------------------------------------------------
 	//                    STATIC VARIABLES
@@ -60,12 +71,11 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	private JLabel lblHeader;
 	
 	private JLabel lblFilePath;
-	private JLabel lblJSONFilePath;
+	
 	
 	private File projectFile;
-	private File jsonSchemaFile;
 	private JButton cmdFilePathChooser;
-	private JButton cmdJSONFilePathChooser;
+	
 	
 	private JLabel lblSelectExample;
 	private JList listSelectExample;
@@ -75,6 +85,13 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	
 	private JList listOutput;
 	private DefaultListModel listOutputModel;
+	private JLabel loadLabel;
+	
+	//OpenWindow
+	private JFrame window = new JFrame ("Select EA Element guid");
+	
+	
+	private IExecution asIExample;
 	
 	//----------------------------------------------------------
 	//                      CONSTRUCTORS
@@ -83,8 +100,10 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle( "Enterprise Architect Object Model" );
-		this.projectFile = new File("C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap");
-		this.jsonSchemaFile = new File("C:\\Temp\\raml\\schemas\\Participation.raml");
+		this.projectFile = new File("C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap");
+		
+		loadConfig();
+		
 		this.initComponents();
 	}
 	
@@ -104,6 +123,11 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		this.lblHeader = new JLabel( "EA MODEL INTERACTION" );
 		this.lblHeader.setFont( headerFont );
 		this.getContentPane().add( this.lblHeader, BorderLayout.NORTH );
+		
+		//ImageIcon loading = new ImageIcon("loading_icon.gif");
+        //loadLabel = new JLabel("Loading... ", loading, JLabel.CENTER);
+		loadLabel = new JLabel("Loading... ", JLabel.CENTER);
+        loadLabel.setVisible(false);
 		
 		// ====================================
 		// INPUT PANEL
@@ -142,16 +166,12 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		this.cmdFilePathChooser.addActionListener( this );
 		gridBag.setConstraints( this.cmdFilePathChooser, gridCon );
 		inputPanel.add( this.cmdFilePathChooser );
-		
-		this.lblJSONFilePath = new JLabel();
-		lblJSONFilePath.setText("Select JSON-SCHEMA File: ");
-		gridBag.setConstraints( this.lblJSONFilePath, gridCon );
-		inputPanel.add( this.lblJSONFilePath );
-		
-		this.cmdJSONFilePathChooser = new JButton("...");
-		this.cmdJSONFilePathChooser.addActionListener( this );
-		gridBag.setConstraints( this.cmdJSONFilePathChooser, gridCon );
-		inputPanel.add( this.cmdJSONFilePathChooser );
+				
+//		gridBag.setConstraints( this.lblJSONFilePath, gridCon );
+//		inputPanel.add( this.lblJSONFilePath );
+//		
+//		gridBag.setConstraints( this.cmdJSONFilePathChooser, gridCon );
+//		inputPanel.add( this.cmdJSONFilePathChooser );
 	
 		//
 		// Select Example: Label, List and Description field
@@ -195,6 +215,8 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		gridBag.setConstraints( this.cmdRunExample, gridCon );
 		inputPanel.add(  this.cmdRunExample );
 		
+		inputPanel.add( loadLabel );
+		
 		// ====================================
 		// OUTPUT PANEL
 		// ====================================
@@ -204,13 +226,28 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, inputPanel, new JScrollPane(this.listOutput) );
 		
 		this.getContentPane().add(  splitPane, BorderLayout.CENTER );
+		
+		//window.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+		window.addWindowListener(this);
+		
+		InternalOptionsPanel myWindowPanel = new InternalOptionsPanel();
+		window.getContentPane().add (myWindowPanel);
+		window.pack();
 	}
 	
 	private void initExampleListEntries()
 	{
 		// Create a new instance of the IExample and add it to the list
 		IExecution newExample = new CreateEntityExecution();
+		IExecution newEntityMappingExample = new CreateEntityMappingExecution();
+		IExecution createAllEntitiesSpreadsheetExecution = new CreateAllEntitiesSpreadsheetExecution();
+		IExecution modelDifferencesExecution = new ModelDifferencesExecution();
+		IExecution getDuplicatedEntitiesExecution = new GetDuplicatedEntitiesExecution();
 		this.listSelectExampleModel.addElement( newExample );
+		this.listSelectExampleModel.addElement( newEntityMappingExample );
+		this.listSelectExampleModel.addElement( createAllEntitiesSpreadsheetExecution );
+		this.listSelectExampleModel.addElement( modelDifferencesExecution );
+		this.listSelectExampleModel.addElement( getDuplicatedEntitiesExecution );
 	}
 	
 	/**
@@ -307,13 +344,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		this.lblFilePath.setText( "File Path: " + this.projectFile.getAbsolutePath() );
 	}
 	
-	/**
-	 * Updates the File Path label text
-	 */
-	private void updateJSONSchemaFilePathLabel()
-	{
-		this.lblJSONFilePath.setText( "JSON File Path: " + this.jsonSchemaFile.getAbsolutePath() );
-	}
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -340,25 +371,6 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 				this.updateFilePathLabel();
 			}
 		}
-		else if ( e.getSource() == this.cmdJSONFilePathChooser )
-		{
-			//
-			// File path chooser was clicked
-			//
-			
-			// Show the file chooser dialog
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.addChoosableFileFilter(null);
-			int returnValue = fileChooser.showOpenDialog( this );
-			
-			// If the action wasn't cancelled, then select the file and
-			// update the label
-			if ( returnValue == JFileChooser.APPROVE_OPTION )
-			{
-				this.jsonSchemaFile = fileChooser.getSelectedFile();
-				this.updateJSONSchemaFilePathLabel();
-			}
-		}
 		else if ( e.getSource() == this.cmdRunExample )
 		{
 			//
@@ -376,17 +388,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 				return;
 			}
 			
-			// Check the JSON-SCHEMA file exists
-			if ( !(this.jsonSchemaFile.exists() && !this.jsonSchemaFile.isDirectory()) )
-			{
-					String message = "The file '";
-					message += this.jsonSchemaFile.getAbsolutePath();
-					message += "' does not exist or is a directory.";
-					JOptionPane.showMessageDialog( this, message, "Invalid File", JOptionPane.ERROR_MESSAGE );
-					return;
-			}
-			
-			IExecution asIExample = 
+			asIExample = 
 				(IExecution)this.listSelectExample.getSelectedValue();
 			
 			if ( asIExample != null )
@@ -394,9 +396,15 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 				// Set a wait cursor while the example is running
 				this.setCursor( Cursor.getPredefinedCursor( Cursor.WAIT_CURSOR ) );
 				
-				// Run the example
-				asIExample.runProcess( this.projectFile, this.jsonSchemaFile, this );
-				
+				if(asIExample.openWindow()){
+					window.setVisible (true);
+				} else {
+					// Run the example
+					
+					ExecutionUI.this.runProcess(projectFile, null, null);
+					
+				}
+							
 				// Restore the cursor to the default
 				this.setCursor( Cursor.getDefaultCursor() );
 			}
@@ -429,6 +437,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	private void setDescriptionText(String text)
 	{
 		this.lblExampleDescription.setText( STYLE_TEXT + "<body>" + text + "</body>");
+		this.lblExampleDescription.paintImmediately(this.lblExampleDescription.getVisibleRect());
 	}
 	//----------------------------------------------------------
 	//                     STATIC METHODS
@@ -462,6 +471,203 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		}
 	}
 	
+	private void runProcess(File projectFile, File jsonSchemaFile, String guid){
+		ExecutionUI.this.setDescriptionText( "Comienzo del Proceso, espere..." );
+		
+		try{
+			Thread.sleep(2000);
+		}
+		catch(Exception ex){
+		}
+		
+		asIExample.runProcess( projectFile, jsonSchemaFile, ExecutionUI.this, guid );
+					
+		ExecutionUI.this.setDescriptionText("PROCESO TERMINADO");
+	}
+	
+	
+	public class InternalOptionsPanel extends JPanel implements ActionListener {
+		
+		private JLabel lblJSONFilePath;
+		private JButton cmdJSONFilePathChooser;
+		
+		private JButton jbutton;
+		private JLabel jlabel;
+		private JTextField jguid;
+		
+		private File jsonSchemaFile;
+		
+		public InternalOptionsPanel() {
+		    //construct components
+			
+			jsonSchemaFile = new File("C:\\Temp\\raml\\schemas\\Participation-fak.raml");
+			
+			jlabel = new JLabel ("Set EA Element GUID");
+		    jbutton = new JButton ("Aceptar");
+		    jbutton.addActionListener(this);
+		    jguid = new JTextField (20);
+		    jguid.setPreferredSize( new Dimension( 240, 24 ) );
 
+		    //adjust size and set layout
+		    setPreferredSize (new Dimension (550, 156));
+		    setLayout (null);
+		    
+		    this.lblJSONFilePath = new JLabel();
+			lblJSONFilePath.setText("Select JSON-SCHEMA File: ");
+			
+			this.cmdJSONFilePathChooser = new JButton("...");
+			this.cmdJSONFilePathChooser.addActionListener( this );
+
+		    //add components
+		    add (jlabel);
+		    add (jbutton);
+		    add (jguid);
+		    
+		    //set component bounds (only needed by Absolute Positioning)
+		    jlabel.setBounds (20, 45, 150, 25);
+		    jguid.setBounds (260, 45, 240, 25);
+		    jbutton.setBounds (195, 90, 110, 25);
+		    
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if ( e.getSource() == this.cmdJSONFilePathChooser )
+			{
+				//
+				// File path chooser was clicked
+				//
+				
+				// Show the file chooser dialog
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.addChoosableFileFilter(null);
+				int returnValue = fileChooser.showOpenDialog( this );
+				
+				// If the action wasn't cancelled, then select the file and
+				// update the label
+				if ( returnValue == JFileChooser.APPROVE_OPTION )
+				{
+					this.jsonSchemaFile = fileChooser.getSelectedFile();
+					this.updateJSONSchemaFilePathLabel();
+				}
+			} 
+			else if (e.getSource() == this.jbutton) {
+				
+				// Check the JSON-SCHEMA file exists
+//				if ( !(this.jsonSchemaFile.exists() && !this.jsonSchemaFile.isDirectory()) )
+//				{
+//						String message = "The file '";
+//						message += this.jsonSchemaFile.getAbsolutePath();
+//						message += "' does not exist or is a directory.";
+//						JOptionPane.showMessageDialog( this, message, "Invalid File", JOptionPane.ERROR_MESSAGE );
+//						return;
+//				}
+								
+				// TODO Auto-generated method stub
+				window.setVisible(false);
+							
+				ExecutionUI.this.runProcess(projectFile, jsonSchemaFile, jguid.getText());
+			}			
+			
+		}
+		
+		/**
+		 * Updates the File Path label text
+		 */
+		private void updateJSONSchemaFilePathLabel()
+		{
+			this.lblJSONFilePath.setText( "JSON File Path: " + this.jsonSchemaFile.getAbsolutePath() );
+		}
+	}
+
+
+	@Override
+	public void windowClosing(java.awt.event.WindowEvent windowEvent){
+			
+		
+		
+		
+	}
+	
+	private String loadConfig(){
+		File configFile = new File("config.properties");
+		String host = null; 
+		try {
+		    FileReader reader = new FileReader(configFile);
+		    Properties props = new Properties();
+		    props.load(reader);
+		 
+		    host = props.getProperty("eaFile");
+		 
+		    System.out.print("eaFile name is: " + host);
+		    reader.close();
+		} catch (FileNotFoundException ex) {
+		   ex.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return host;
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+		System.out.println(" ***** si entra aqui: 1");
+		
+	    
+	        //save the file
+	    	
+	    	System.out.print("si entra aqui:");
+	    	
+	    	   	File configFile = new File("config.properties");
+		        try{
+		        	
+		        	Properties props = new Properties();
+		            props.setProperty("eaFile", this.projectFile.getAbsolutePath());
+		            FileWriter writer = new FileWriter(configFile);
+		            props.store(writer, "Program settings");
+		            writer.close();
+		        	
+		        	dispose();  //dispose the frame
+		        }
+		        catch(IOException io){
+		            JOptionPane.showMessageDialog(null,io.getMessage());
+		        }
+	         
+		
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println(" ***** si entra aqui: 2");
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println(" ***** si entra aqui: 3");
+	}
 
 }

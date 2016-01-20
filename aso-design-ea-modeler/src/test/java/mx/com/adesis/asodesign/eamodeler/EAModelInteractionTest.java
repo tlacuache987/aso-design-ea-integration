@@ -1,8 +1,10 @@
 package mx.com.adesis.asodesign.eamodeler;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
 import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
@@ -11,14 +13,33 @@ import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelEnumA
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelInterfaceAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelObjectAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.enums.AttributeType;
+import mx.com.adesis.asodesign.eaintegration.service.api.IModelService;
+import mx.com.adesis.asodesign.eamodeler.execution.CustomResourceLoader;
+import mx.com.adesis.asodesign.eamodeler.modeltojson.ModelToJsonUtilsTest;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.sparx.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@Slf4j
+@ContextConfiguration({ "classpath:/spring/eamodeler/asodesign-eamodeler-service-context.xml" })
+@RunWith(SpringJUnit4ClassRunner.class)
 public class EAModelInteractionTest {
-
-	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\dise�o\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
-	public static String EAP_FILE_TEMPLATE = "C:\\proyectos\\proyecto_ASO_multicanal\\dise�o\\fuentes_descargados\\repo_git\\aso-design\\Diagrams\\design-template.eap";
+	
+	public static String JSON_FILE = "C:\\Temp\\raml\\schemas\\Participation-fake.raml";
+	public static String EAP_FILE = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
+	public static String EAP_FILE_TEMPLATE = "C:\\Temp\\design-template.eap";
+	
+	@Autowired
+	IModelService modelService;
+	
+	@Autowired
+	CustomResourceLoader customResourceLoader;
 
 	@Test
 	@Ignore
@@ -126,5 +147,44 @@ public class EAModelInteractionTest {
 		modifyModel.workOnEntityList(EAP_FILE_TEMPLATE, models, "{98F20947-C2FF-40bb-B815-7F1972040190}");
 
 	}
+	
+	@Test
+	@Ignore
+	public void integrationTestCreateNewElements() {
+		
+		Resource resource = customResourceLoader.getResource("file:" + JSON_FILE);
+		
+		
+		IModel model = null;
+		try{
+			InputStream is = resource.getInputStream();
+			
+			model = modelService.getModel(is);
+		}
+		catch(Exception e){
+			throw new RuntimeException(e);
+		}
+		
+		List models = new ArrayList<IModel>();
+		models.add(model);
+		
+		log.debug("model: " + model);
+		
+		EAModelInteraction modifyModel = new EAModelInteraction();
+		modifyModel.workOnEntityList(EAP_FILE_TEMPLATE, models, "{98F20947-C2FF-40bb-B815-7F1972040190}");
+		
+	}
+	
+	@Test
+	@Ignore
+	public void testGetDuplicateElements() {
+		EAModelInteraction modifyModel = new EAModelInteraction();
+		List<String> duplicateElements = modifyModel.getDuplicateEntitiesNames(EAP_FILE);
+		for (String elementName : duplicateElements) {
+			log.debug(elementName);
+		}
+	}
+	
+	
 
 }

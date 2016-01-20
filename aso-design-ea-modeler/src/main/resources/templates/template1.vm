@@ -1,0 +1,27 @@
+$model.name: |
+  {
+   "type": "$model.type",
+   "schema": "$model.schema",
+   "id": "$model.name",
+   "description": "$model.description"#if(!$model.attributes.isEmpty()),#end
+   #modelAttributes($model.attributes) 
+  }
+  
+  
+#macro( modelAttributes $attributes )
+#set( $attributesSize = $attributes.size() )
+#set( $attributeCount = 0 )
+#if( !$attributes.isEmpty() )
+   
+   "properties": {
+#foreach( $attribute in $attributes)
+        "$attribute.name" : {
+            "description" : "$attribute.description"             
+        }#if($attributeCount < $attributesLength ),#end
+        #set( $attributeCount = $attributeCount + 1 )
+        $attributeCount
+        $attributesSize
+#end
+    }
+#end
+#end  

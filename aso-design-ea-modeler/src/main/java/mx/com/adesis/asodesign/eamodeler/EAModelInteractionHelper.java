@@ -1,6 +1,17 @@
 package mx.com.adesis.asodesign.eamodeler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import lombok.extern.slf4j.Slf4j;
+import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
+import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
+import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelObjectAttribute;
 
 import org.sparx.Attribute;
 import org.sparx.AttributeTag;
@@ -29,8 +40,10 @@ public final class EAModelInteractionHelper {
 	public static Element workOnNewElement(Repository rep, Package thePackage, String name, String description, String type, String stereotype) throws Exception {
 		Collection<Element> elements = thePackage.GetElements();
 		Element theElement = elements.AddNew(name, type);
-		theElement.SetNotes(description);
-		if(stereotype!= null){
+		if(description != null){
+			theElement.SetNotes(description);
+		}
+		if(stereotype != null){
 			theElement.SetStereotype(stereotype);
 		}
 		theElement.Update();
@@ -127,4 +140,94 @@ public final class EAModelInteractionHelper {
 	}
 	
 	
+	public static Map<String,Element> getAllRepositoryEntities(Repository rep){
+		Collection<Element> elementSet = rep.GetElementSet("",0);
+		Map<String,Element> repoEntitiesMap = new HashMap<String, Element>();
+		
+		Iterator<Element> it = elementSet.iterator();
+		while(it.hasNext()){
+			Element nextElement = it.next();
+			repoEntitiesMap.put(nextElement.GetName(), nextElement);
+		}		
+		return repoEntitiesMap;
+	}
+	
+	public static List<String> getDuplicateEntitiesNames(Repository rep){
+		List<String> duplicateEntities = new ArrayList<String>();
+		Collection<Element> elementSet = rep.GetElementSet("",0);
+		Map<String,Element> repoEntitiesMap = new HashMap<String, Element>();
+		
+		Iterator<Element> it = elementSet.iterator();
+		while(it.hasNext()){
+			Element nextElement = it.next();
+			if(nextElement.GetType().equals("Package")){
+				continue;
+			}
+			Element elementFound = repoEntitiesMap.get(nextElement.GetName());
+			if(elementFound != null){
+				duplicateEntities.add(nextElement.GetName());
+			} else {
+				repoEntitiesMap.put(nextElement.GetName(), nextElement);
+			}
+		}		
+		return duplicateEntities;
+	}	
+	
+	
+	public static List<IModel> getEAElementDetailTree(String EAFileName){
+		
+		List<IModel> iModelList = new ArrayList<IModel>();
+		Repository rep = null;
+				
+		try {
+			// Create a repository object - This will create a new instance of
+			// EA
+			rep = new Repository();
+			rep.OpenFile( EAFileName );
+			
+			//Se obtiene una lista de todos los elementos del modelo
+			log.debug( "Obteniendo la lista de entidades completas del modelo" );
+			Map<String,Element> allElements = EAModelInteractionHelper.getAllRepositoryEntities(rep);
+			Set<String> keys = allElements.keySet();
+			for (String key : keys) {
+				Element element = allElements.get(key);
+				Model model = new Model();
+				model.setName(element.GetName());
+				iModelList.add(model);
+				List<IAttribute> modelAttributeList = new ArrayList<IAttribute>();
+				model.setAttributes(modelAttributeList);
+				
+				// Obtiene todos los atributos del objeto
+				Collection<Attribute> attributesCollection = element.GetAttributes();
+				if( attributesCollection.GetCount() > 0 )
+				{						
+					Iterator<Attribute> it = attributesCollection.iterator();
+					while(it.hasNext()){
+						Attribute attribute = it.next();
+						ModelObjectAttribute modelAttribute = new ModelObjectAttribute();
+						modelAttribute.setName(attribute.GetName());
+						modelAttribute.setDescription(attribute.GetNotes());
+						modelAttribute.setSubtype(attribute.GetType());
+						modelAttributeList.add(modelAttribute);
+					}
+				}
+			}
+			
+		} 
+		catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		}
+		finally {
+			if (rep != null) {
+				// Clean up
+				rep.CloseFile();
+				rep.Exit();
+				rep.destroy();
+			}
+		}
+		
+		return iModelList;		
+	}
+		
 }
