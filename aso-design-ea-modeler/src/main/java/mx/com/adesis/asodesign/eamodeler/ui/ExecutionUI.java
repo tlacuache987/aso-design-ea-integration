@@ -98,7 +98,8 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle( "Enterprise Architect Object Model" );
-			
+		
+		
 		String configValue = loadConfig();
 		if(configValue != null){
 				projectFile = new File(configValue);
