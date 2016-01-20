@@ -9,7 +9,6 @@ import javax.swing.DefaultListModel;
 
 import mx.com.adesis.asodesign.eamodeler.compare.CompareModel;
 import mx.com.adesis.asodesign.eamodeler.compare.CompareModelType;
-import mx.com.adesis.asodesign.eamodeler.modeltospreadsheet.CreateAllEntitiesSpreadsheet;
 import mx.com.adesis.asodesign.eamodeler.ui.ExecutionUI;
 
 public class ModelDifferencesExecution implements IExecution {

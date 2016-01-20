@@ -11,9 +11,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -26,7 +25,6 @@ import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -56,7 +54,7 @@ import sun.misc.Launcher;
  * select various example from the list and see their description, and run the examples and view
  * the output.
  */
-public class ExecutionUI extends JFrame implements ActionListener, ListSelectionListener, HyperlinkListener, WindowListener
+public class ExecutionUI extends JFrame implements ActionListener, ListSelectionListener, HyperlinkListener
 {	
 	//----------------------------------------------------------
 	//                    STATIC VARIABLES
@@ -88,7 +86,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	private JLabel loadLabel;
 	
 	//OpenWindow
-	private JFrame window = new JFrame ("Select EA Element guid");
+	private JFrame internalWindow = new JFrame ("Select EA Element guid");
 	
 	
 	private IExecution asIExample;
@@ -100,10 +98,15 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle( "Enterprise Architect Object Model" );
-		this.projectFile = new File("C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap");
-		
-		loadConfig();
-		
+			
+		String configValue = loadConfig();
+		if(configValue != null){
+				projectFile = new File(configValue);
+		} else {
+			//dafualtPath
+			projectFile = new File("C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap");
+		}		
+			
 		this.initComponents();
 	}
 	
@@ -167,12 +170,6 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		gridBag.setConstraints( this.cmdFilePathChooser, gridCon );
 		inputPanel.add( this.cmdFilePathChooser );
 				
-//		gridBag.setConstraints( this.lblJSONFilePath, gridCon );
-//		inputPanel.add( this.lblJSONFilePath );
-//		
-//		gridBag.setConstraints( this.cmdJSONFilePathChooser, gridCon );
-//		inputPanel.add( this.cmdJSONFilePathChooser );
-	
 		//
 		// Select Example: Label, List and Description field
 		//
@@ -227,12 +224,38 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		
 		this.getContentPane().add(  splitPane, BorderLayout.CENTER );
 		
-		//window.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-		window.addWindowListener(this);
+		this.addWindowListener(new WindowAdapter()
+        {
+            
+			@Override
+            public void windowClosing(WindowEvent e)
+            {
+                File configFile = new File("config.properties");
+		        try{
+		        	
+		        	Properties props = new Properties();
+		        	String eaFilePath = ExecutionUI.this.projectFile.getAbsolutePath();
+		            props.setProperty("eaFile", eaFilePath);
+		            		            
+		            FileWriter writer = new FileWriter(configFile);
+		            props.store(writer, "Program settings");
+		            writer.close();
+		        	
+		        	dispose();  //dispose the frame
+		        }
+		        catch(IOException io){
+		            JOptionPane.showMessageDialog(null,io.getMessage());
+		        }
+                
+                System.exit(0);
+            }
+						
+			
+        });
 		
 		InternalOptionsPanel myWindowPanel = new InternalOptionsPanel();
-		window.getContentPane().add (myWindowPanel);
-		window.pack();
+		internalWindow.getContentPane().add (myWindowPanel);
+		internalWindow.pack();
 	}
 	
 	private void initExampleListEntries()
@@ -369,6 +392,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 			{
 				this.projectFile = fileChooser.getSelectedFile();
 				this.updateFilePathLabel();
+				System.out.println("se actualizo la ruta del archivo " +  projectFile.getAbsolutePath());
 			}
 		}
 		else if ( e.getSource() == this.cmdRunExample )
@@ -397,7 +421,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 				this.setCursor( Cursor.getPredefinedCursor( Cursor.WAIT_CURSOR ) );
 				
 				if(asIExample.openWindow()){
-					window.setVisible (true);
+					internalWindow.setVisible (true);
 				} else {
 					// Run the example
 					
@@ -565,7 +589,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 //				}
 								
 				// TODO Auto-generated method stub
-				window.setVisible(false);
+				internalWindow.setVisible(false);
 							
 				ExecutionUI.this.runProcess(projectFile, jsonSchemaFile, jguid.getText());
 			}			
@@ -580,15 +604,6 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 			this.lblJSONFilePath.setText( "JSON File Path: " + this.jsonSchemaFile.getAbsolutePath() );
 		}
 	}
-
-
-	@Override
-	public void windowClosing(java.awt.event.WindowEvent windowEvent){
-			
-		
-		
-		
-	}
 	
 	private String loadConfig(){
 		File configFile = new File("config.properties");
@@ -599,75 +614,15 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		    props.load(reader);
 		 
 		    host = props.getProperty("eaFile");
-		 
-		    System.out.print("eaFile name is: " + host);
+		 	    
 		    reader.close();
 		} catch (FileNotFoundException ex) {
-		   ex.printStackTrace();
+			System.out.print("warning: archivo config.properties no encontrado");
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			System.out.print("warning: no es posible leer el archivo config.properties");
 		}
 		return host;
 	}
 
-	@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-		System.out.println(" ***** si entra aqui: 1");
-		
-	    
-	        //save the file
-	    	
-	    	System.out.print("si entra aqui:");
-	    	
-	    	   	File configFile = new File("config.properties");
-		        try{
-		        	
-		        	Properties props = new Properties();
-		            props.setProperty("eaFile", this.projectFile.getAbsolutePath());
-		            FileWriter writer = new FileWriter(configFile);
-		            props.store(writer, "Program settings");
-		            writer.close();
-		        	
-		        	dispose();  //dispose the frame
-		        }
-		        catch(IOException io){
-		            JOptionPane.showMessageDialog(null,io.getMessage());
-		        }
-	         
-		
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println(" ***** si entra aqui: 2");
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println(" ***** si entra aqui: 3");
-	}
 
 }
