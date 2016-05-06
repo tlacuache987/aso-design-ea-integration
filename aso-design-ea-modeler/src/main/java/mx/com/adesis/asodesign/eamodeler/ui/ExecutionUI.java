@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URL;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -44,6 +45,8 @@ import javax.swing.event.ListSelectionListener;
 import mx.com.adesis.asodesign.eamodeler.execution.CreateAllEntitiesSpreadsheetExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.CreateEntityExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.CreateEntityMappingExecution;
+import mx.com.adesis.asodesign.eamodeler.execution.CreateJsonExampleExecution;
+import mx.com.adesis.asodesign.eamodeler.execution.GenerateRAMLCodeExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.GetDuplicatedEntitiesExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.IExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.ModelDifferencesExecution;
@@ -261,16 +264,20 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 	private void initExampleListEntries()
 	{
 		// Create a new instance of the IExample and add it to the list
-		IExecution newExample = new CreateEntityExecution();
+		IExecution createEntityExecution = new CreateEntityExecution();
 		IExecution newEntityMappingExample = new CreateEntityMappingExecution();
 		IExecution createAllEntitiesSpreadsheetExecution = new CreateAllEntitiesSpreadsheetExecution();
 		IExecution modelDifferencesExecution = new ModelDifferencesExecution();
 		IExecution getDuplicatedEntitiesExecution = new GetDuplicatedEntitiesExecution();
-		this.listSelectExampleModel.addElement( newExample );
+		IExecution getjsonExampleExecution = new CreateJsonExampleExecution();
+		IExecution generateRAMLCodeExecution = new GenerateRAMLCodeExecution();
+		this.listSelectExampleModel.addElement( createEntityExecution );
 		this.listSelectExampleModel.addElement( newEntityMappingExample );
 		this.listSelectExampleModel.addElement( createAllEntitiesSpreadsheetExecution );
 		this.listSelectExampleModel.addElement( modelDifferencesExecution );
 		this.listSelectExampleModel.addElement( getDuplicatedEntitiesExecution );
+		this.listSelectExampleModel.addElement( getjsonExampleExecution );
+		this.listSelectExampleModel.addElement( generateRAMLCodeExecution );
 	}
 	
 	/**
@@ -495,7 +502,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		}
 	}
 	
-	private void runProcess(File projectFile, File jsonSchemaFile, String guid){
+	private void runProcess(File projectFile, String guid, Map<String,Object> additionalParams){
 		ExecutionUI.this.setDescriptionText( "Comienzo del Proceso, espere..." );
 		
 		try{
@@ -504,7 +511,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		catch(Exception ex){
 		}
 		
-		asIExample.runProcess( projectFile, jsonSchemaFile, ExecutionUI.this, guid );
+		asIExample.runProcess( ExecutionUI.this, projectFile, guid, additionalParams );
 					
 		ExecutionUI.this.setDescriptionText("PROCESO TERMINADO");
 	}
@@ -519,12 +526,12 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		private JLabel jlabel;
 		private JTextField jguid;
 		
-		private File jsonSchemaFile;
+		private File additionalFile;
 		
 		public InternalOptionsPanel() {
 		    //construct components
 			
-			jsonSchemaFile = new File("C:\\Temp\\raml\\schemas\\Participation-fak.raml");
+			additionalFile = new File("C:\\Temp\\raml\\schemas\\Participation-fak.raml");
 			
 			jlabel = new JLabel ("Set EA Element GUID");
 		    jbutton = new JButton ("Aceptar");
@@ -572,7 +579,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 				// update the label
 				if ( returnValue == JFileChooser.APPROVE_OPTION )
 				{
-					this.jsonSchemaFile = fileChooser.getSelectedFile();
+					this.additionalFile = fileChooser.getSelectedFile();
 					this.updateJSONSchemaFilePathLabel();
 				}
 			} 
@@ -590,8 +597,10 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 								
 				// TODO Auto-generated method stub
 				internalWindow.setVisible(false);
+				
+				Map<String, Object> additionalParam = null;
 							
-				ExecutionUI.this.runProcess(projectFile, jsonSchemaFile, jguid.getText());
+				ExecutionUI.this.runProcess(projectFile, jguid.getText(), additionalParam);
 			}			
 			
 		}
@@ -601,7 +610,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		 */
 		private void updateJSONSchemaFilePathLabel()
 		{
-			this.lblJSONFilePath.setText( "JSON File Path: " + this.jsonSchemaFile.getAbsolutePath() );
+			this.lblJSONFilePath.setText( "JSON File Path: " + this.additionalFile.getAbsolutePath() );
 		}
 	}
 	

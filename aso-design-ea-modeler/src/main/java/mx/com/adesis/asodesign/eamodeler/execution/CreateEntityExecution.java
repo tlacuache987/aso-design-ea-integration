@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.DefaultListModel;
 
@@ -38,10 +39,11 @@ public class CreateEntityExecution implements IExecution {
 		return "Crea una entidad en EA apartir de un JSON Schema";
 	}
 
-	public void runProcess(File projectFile, File jsonSchemaFile, ExecutionUI uiFrame, String guid) {
+	public void runProcess(ExecutionUI uiFrame, File projectFile, String elementGuid, Map<String, Object> additionalParameters) {
 		DefaultListModel outputList = uiFrame.getOutputListModel();
 		outputList.addElement("Comienza la ejecución de la implementacion CreateEntityExecution... espere un momento");
 		try {
+			File jsonSchemaFile = (File) additionalParameters.get("JSON_SCHEMA_FILE");
 			createAttributeFromNewElement2(jsonSchemaFile.getAbsolutePath(), uiFrame);
 			outputList.addElement("Ejecución terminada");
 		} catch (Exception e) {

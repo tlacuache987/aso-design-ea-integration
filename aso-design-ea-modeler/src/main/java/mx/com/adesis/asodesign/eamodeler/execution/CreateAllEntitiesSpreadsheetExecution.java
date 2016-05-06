@@ -1,6 +1,7 @@
 package mx.com.adesis.asodesign.eamodeler.execution;
 
 import java.io.File;
+import java.util.Map;
 
 import javax.swing.DefaultListModel;
 
@@ -18,7 +19,7 @@ public class CreateAllEntitiesSpreadsheetExecution implements IExecution {
 		return "Crea una hoja de calculo con todas las entidades del modelo EA";
 	}
 
-	public void runProcess(File projectFile, File jsonSchemaFile, ExecutionUI uiFrame, String guid) {
+	public void runProcess(ExecutionUI uiFrame, File projectFile, String elementGuid, Map<String, Object> additionalParameters) {
 		
 		DefaultListModel outputList = uiFrame.getOutputListModel();
 		
@@ -42,7 +43,7 @@ public class CreateAllEntitiesSpreadsheetExecution implements IExecution {
 
 	@Override
 	public boolean openWindow() {
-		return true;
+		return false;
 	}
 
 }

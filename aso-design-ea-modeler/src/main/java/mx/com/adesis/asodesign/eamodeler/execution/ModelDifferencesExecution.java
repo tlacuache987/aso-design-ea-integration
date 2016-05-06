@@ -4,6 +4,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.util.Map;
 
 import javax.swing.DefaultListModel;
 
@@ -22,7 +23,7 @@ public class ModelDifferencesExecution implements IExecution {
 		return "Obtiene las diferencias entre el MCD y el Modelado en EA";
 	}
 
-	public void runProcess(File projectFile, File jsonSchemaFile, ExecutionUI uiFrame, String guid){ 
+	public void runProcess(ExecutionUI uiFrame, File projectFile, String elementGuid, Map<String, Object> additionalParameters) {
 		
 		String excelFile = "C:\\Temp\\Canonico.xls";
 				

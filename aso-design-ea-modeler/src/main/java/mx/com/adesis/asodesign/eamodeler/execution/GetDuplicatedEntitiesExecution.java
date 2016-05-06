@@ -5,6 +5,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.DefaultListModel;
 
@@ -20,8 +21,7 @@ public class GetDuplicatedEntitiesExecution implements IExecution {
 	}
 
 	@Override
-	public void runProcess(File projectFile, File JsonSchemaFile,
-			ExecutionUI uiFrame, String elementGuid) {
+	public void runProcess(ExecutionUI uiFrame, File projectFile, String elementGuid, Map<String, Object> additionalParameters) {
 		
 		DefaultListModel outputList = uiFrame.getOutputListModel();
 		

@@ -11,19 +11,20 @@ import javax.swing.DefaultListModel;
 import org.sparx.Repository;
 
 import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
+import mx.com.adesis.asodesign.eamodeler.generatesourcecode.GenerateJsonExample;
 import mx.com.adesis.asodesign.eamodeler.modeltospreadsheet.CreateMappingSpreadsheet;
 import mx.com.adesis.asodesign.eamodeler.ui.ExecutionUI;
 
-public class CreateEntityMappingExecution implements IExecution {
+public class CreateJsonExampleExecution implements IExecution {
 	
 	
 	public String toString() {
-		return "CreateEntityMappingExecution";
+		return "CreateJsonExampleExecution";
 	}
 	
 	@Override
 	public String getDescription() {
-		return "Crea el mapping de llenado de hoja ASO de una entidad dada";
+		return "Crea el ejemplo JSON de una entidad dada";
 	}
 
 	public void runProcess(ExecutionUI uiFrame, File projectFile, String elementGuid, Map<String, Object> additionalParameters) {
@@ -32,11 +33,11 @@ public class CreateEntityMappingExecution implements IExecution {
 		
 		try{
 			
-			CreateMappingSpreadsheet spreedSheet = new CreateMappingSpreadsheet();
+			GenerateJsonExample spreedSheet = new GenerateJsonExample();
 			IModel iModel = spreedSheet.getElementDetailTree(projectFile.getAbsolutePath(), elementGuid);
 			outputList.addElement(iModel.toString());
 			
-			String mapping = spreedSheet.getElementDetailTreeAsSpreadSheetRows(null, iModel);
+			String mapping = spreedSheet.getElementDetailTreeAsJson(iModel);
 			
 			//Copia el texto al Clipboard
 			StringSelection stringSelection = new StringSelection(mapping);

@@ -1,18 +1,13 @@
 package mx.com.adesis.asodesign.eamodeler;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import mx.com.adesis.asodesign.eaintegration.model.api.IModel;
-import mx.com.adesis.asodesign.eaintegration.model.api.impl.Model;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IArrayAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IEnumAttribute;
 import mx.com.adesis.asodesign.eaintegration.model.attribute.api.IInterfaceAttribute;
-import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelAttribute;
-import mx.com.adesis.asodesign.eaintegration.model.attribute.api.impl.ModelObjectAttribute;
 
 import org.sparx.Attribute;
 import org.sparx.Collection;

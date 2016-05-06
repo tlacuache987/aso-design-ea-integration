@@ -11,5 +11,6 @@ public class SpreadSheetAttribute extends ModelObjectAttribute{
 	
 	private boolean hasChildAttributes;
 	private IModel childModel;
+	private String stereotype;
 	
 }

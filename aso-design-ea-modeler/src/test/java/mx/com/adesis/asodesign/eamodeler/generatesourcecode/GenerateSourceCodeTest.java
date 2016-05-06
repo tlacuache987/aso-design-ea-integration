@@ -6,14 +6,45 @@ import org.junit.Test;
 public class GenerateSourceCodeTest {
 
 	@Test
-	@Ignore
-	public void test() {
+	//@Ignore
+	public void generateSourceCode() {
 		
-		String personaPackage = "{B4F0F82B-EE5D-447b-AC5A-729398EDE563}";
-		String eaFile = "c://Temp//design-template.eap";
+		//String packageGuidService = "{F2339377-96CA-44cb-9DF6-36D218BB1B84}";
+		String packageGuidModel = "{38197096-5ABB-4552-891F-33565BA7743B}";
+		
+		String eaFile = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
 		
 		GenerateSourceCode sc = new GenerateSourceCode();
-		sc.generateSourceCode(eaFile, personaPackage);
+		//sc.generateSourceCode(eaFile, packageGuidService);
+		sc.generateSourceCode(eaFile, packageGuidModel, "raml", "C:\\Temp\\codeGen");
 	}
+	
+	@Test
+	//@Ignore
+	public void setGenType() {
+		
+		String packageGuid = "{9B3E07B6-FDE7-44c6-AF6C-1194A56BF147}";
+		String eaFile = "C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap";
+		
+		GenerateSourceCode sc = new GenerateSourceCode();
+		sc.setGenType(eaFile, packageGuid, "JSON_SCHEMA");
+	}
+	
+	@Test
+	public void changeFilesExtension(){
+		
+		GenerateSourceCode sc = new GenerateSourceCode();
+		sc.changeAllFilesExtension("C:\\Temp\\codeGen", "raml");
+		
+	}
+	
+	@Test
+	public void generateSamples(){
+		GenerateSourceCode sc = new GenerateSourceCode();
+		sc.createEAElementSamples("C:\\proyectos\\proyecto_ASO_multicanal\\diseño\\enterpsise_architect\\aso-arquitect\\design-template-aso.eap",
+				"{AAA333A4-2F78-447d-8F01-A5D72983FECC}", "C:\\Temp\\codeGen");
+		
+	}
+
 
 }

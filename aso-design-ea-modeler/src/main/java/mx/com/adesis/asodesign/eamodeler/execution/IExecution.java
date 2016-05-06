@@ -1,6 +1,7 @@
 package mx.com.adesis.asodesign.eamodeler.execution;
 
 import java.io.File;
+import java.util.Map;
 
 import mx.com.adesis.asodesign.eamodeler.ui.ExecutionUI;
 
@@ -30,7 +31,7 @@ public interface IExecution
 	/**
 	 * Runs this example with the specified project file, outputing results to outputList
 	 */
-	public abstract void runProcess( File projectFile,  File JsonSchemaFile, ExecutionUI uiFrame, String elementGuid );
+	public abstract void runProcess( ExecutionUI uiFrame, File projectFile,  String elementGuid, Map<String, Object> additionalParams );
 	
 	/**
 	 *  Open a window to set Process Parameters 
