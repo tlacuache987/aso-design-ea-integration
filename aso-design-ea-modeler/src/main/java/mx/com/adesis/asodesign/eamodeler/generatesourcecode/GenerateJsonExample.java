@@ -35,28 +35,49 @@ public class GenerateJsonExample {
 			SpreadSheetAttribute shAttribute = (SpreadSheetAttribute) attribute;
 	    	if(!shAttribute.isHasChildAttributes()){
 	    		sb.append("\"").append(shAttribute.getName()).append("\" : ");
-	    		sb.append("\"").append(getExampleTextByAttributeType(shAttribute));
-	    		String endLine = "\",\n";
-	    		//System.out.println(currentAttributeNumber + " - " + numAttributes);
-	    		if(currentAttributeNumber == numAttributes){
-	    			endLine = "\"\n";
+	    		if(!shAttribute.isHasChildAttributesList()){
+	    			sb.append("\"").append(getExampleTextByAttributeType(shAttribute));
+		    		String endLine = "\",\n";
+		    		//System.out.println(currentAttributeNumber + " - " + numAttributes);
+		    		if(currentAttributeNumber == numAttributes){
+		    			endLine = "\"\n";
+		    		}
+		    		sb.append(endLine);	
+	    		}else{
+	    			sb.append("[\"").append(getExampleTextByAttributeType(shAttribute));
+		    		String endLine = "\"],\n";
+		    		//System.out.println(currentAttributeNumber + " - " + numAttributes);
+		    		if(currentAttributeNumber == numAttributes){
+		    			endLine = "\"]\n";
+		    		}
+		    		sb.append(endLine);	
 	    		}
-	    		sb.append(endLine);
+	    		
 	    	} else {
 	    		
 	    		//verifica que el atributo no se llame igual que el de la entidad padre
 	    		if(shAttribute.getSubtype().equalsIgnoreCase(iModel.getName())){
 	    			continue;
 	    		}
-	    			    		
-	    		//prefixFixed += "." + shAttribute.getName();
 	    		sb.append("\"").append(shAttribute.getName()).append("\" : ");
-	    		String str = getElementDetailTreeAsJson(shAttribute.getChildModel());
-	    		sb.append(str);
-	    		//System.out.println("[entidad: " + str + " - " +  currentAttributeNumber + " - " + numAttributes + " ]");
-	    		if(currentAttributeNumber < numAttributes){
-	    			sb.append(",");
+	    		if(!shAttribute.isHasChildAttributesList()){
+	    			//prefixFixed += "." + shAttribute.getName();
+		    		String str = getElementDetailTreeAsJson(shAttribute.getChildModel());
+		    		sb.append(str);
+		    		//System.out.println("[entidad: " + str + " - " +  currentAttributeNumber + " - " + numAttributes + " ]");
+		    		if(currentAttributeNumber < numAttributes){
+		    			sb.append(",");
+		    		}
+	    		}else{
+	    			String str = getElementDetailTreeAsJson(shAttribute.getChildModel());
+		    		sb.append("["+str+"]");
+		    		//System.out.println("[entidad: " + str + " - " +  currentAttributeNumber + " - " + numAttributes + " ]");
+		    		if(currentAttributeNumber < numAttributes){
+		    			sb.append(",");
+		    		}
+	    			
 	    		}
+	    		
 	    	}
 	    	currentAttributeNumber++;
 	    }
@@ -127,15 +148,23 @@ public class GenerateJsonExample {
 				Iterator<Attribute> it = attributesCollection.iterator();
 				while(it.hasNext()){
 					Attribute attribute = it.next();
+					String type = attribute.GetType();
 					SpreadSheetAttribute modelAttribute = new SpreadSheetAttribute();
 					modelAttribute.setName(attribute.GetName());
-					modelAttribute.setAttributeType(setAttributeType(attribute.GetType()));
+					modelAttribute.setAttributeType(setAttributeType(type));
 					modelAttribute.setStereotype(attribute.GetStereotype());
-					modelAttribute.setSubtype(attribute.GetType());
+					modelAttribute.setSubtype(type);
 					modelAttributes.add(modelAttribute);
 					
+					//valida si es tipolista
+					if(type.indexOf("<")!= -1){
+						//regresa solo el tipo de la lista
+						type = type.substring(type.indexOf("<")+1, type.length()-1);
+						modelAttribute.setHasChildAttributesList(true);
+					}
+					
 					//verifica si es un objeto que a su vez tiene más objetos hijos
-					Element element = allElementsMap.get(attribute.GetType());
+					Element element = allElementsMap.get(type);
 					if(element != null){
 						
 						//en caso de que tenga objetos hijos se manda llamar este metodo de 

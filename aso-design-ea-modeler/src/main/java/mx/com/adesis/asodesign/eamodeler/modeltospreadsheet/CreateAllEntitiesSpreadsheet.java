@@ -63,27 +63,35 @@ public class CreateAllEntitiesSpreadsheet {
 						mdcAttributeMap.put(iAttribute.getName(), iAttribute);
 					}
 				}
-				for (IAttribute iAttribute : attributes) {
+				if(iModel.getStereotype().equalsIgnoreCase("interface")){
 					HSSFRow attributeRow = createSpreedSheetRow(worksheet, rowIndex++);
 					addCell(workbook, attributeRow, 0, iModel.getName());
-					addCell(workbook, attributeRow, 1, iAttribute.getName());
-					addCell(workbook, attributeRow, 2, iAttribute.getDescription());
-					addCell(workbook, attributeRow, 3, getAttributeExtType(iAttribute.getSubtype()));
-					addCell(workbook, attributeRow, 4, getAttributeSubTypeExt(iAttribute.getSubtype()));
-					addCell(workbook, attributeRow, 5, iAttribute.getSubtype());
-					//addCell(workbook, attributeRow, 6, "");
-					addCell(workbook, attributeRow, 7, getAttributeType(iAttribute.getSubtype()));
-					if(mdcAttributeMap == null){
-						addCell(workbook, attributeRow, 8, entityMCD);
-					} else {
-						String attMcd = "No";
-						IAttribute attPresent = mdcAttributeMap.get( iAttribute.getName() );
-						if(attPresent != null){
-							attMcd = "Si";
+					addCell(workbook, attributeRow, 1, iModel.getStereotype());
+				}else{
+					for (IAttribute iAttribute : attributes) {
+						HSSFRow attributeRow = createSpreedSheetRow(worksheet, rowIndex++);
+						addCell(workbook, attributeRow, 0, iModel.getName());
+						addCell(workbook, attributeRow, 1, iAttribute.getName());
+						addCell(workbook, attributeRow, 2, iAttribute.getDescription());
+						addCell(workbook, attributeRow, 3, getAttributeExtType(iAttribute.getSubtype()));
+						addCell(workbook, attributeRow, 4, getAttributeSubTypeExt(iAttribute.getSubtype()));
+						addCell(workbook, attributeRow, 5, iAttribute.getSubtype());
+						//addCell(workbook, attributeRow, 6, "");
+						addCell(workbook, attributeRow, 7, getAttributeType(iAttribute.getSubtype()));
+						if(mdcAttributeMap == null){
+							addCell(workbook, attributeRow, 8, entityMCD);
+						} else {
+							String attMcd = "No";
+							IAttribute attPresent = mdcAttributeMap.get( iAttribute.getName() );
+							if(attPresent != null){
+								attMcd = "Si";
+							}
+							addCell(workbook, attributeRow, 8, attMcd);
 						}
-						addCell(workbook, attributeRow, 8, attMcd);
 					}
 				}
+				
+				
 			}
 							
 			workbook.write(fileOut);
