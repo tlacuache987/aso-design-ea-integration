@@ -25,4 +25,8 @@ public interface IModel {
 	String getType();
 
 	void setType(String type);
+	
+	String getStereotype();
+	
+	void setStereotype(String stereotype);
 }

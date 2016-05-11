@@ -13,4 +13,5 @@ public class Model implements IModel {
 	private String description;
 	private String schema;
 	private String type;
+	private String stereotype;
 }

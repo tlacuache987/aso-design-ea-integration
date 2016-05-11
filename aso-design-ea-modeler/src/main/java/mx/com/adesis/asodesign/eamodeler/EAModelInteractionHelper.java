@@ -193,6 +193,7 @@ public final class EAModelInteractionHelper {
 				Element element = allElements.get(key);
 				Model model = new Model();
 				model.setName(element.GetName());
+				model.setStereotype(element.GetStereotype());
 				iModelList.add(model);
 				List<IAttribute> modelAttributeList = new ArrayList<IAttribute>();
 				model.setAttributes(modelAttributeList);
