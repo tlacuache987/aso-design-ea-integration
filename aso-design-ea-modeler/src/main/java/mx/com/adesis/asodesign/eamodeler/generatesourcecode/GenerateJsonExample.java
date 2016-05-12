@@ -178,14 +178,23 @@ public class GenerateJsonExample {
 								!element.GetStereotype().equalsIgnoreCase("interface")){
 							
 							//Se evita ciclado de entidades si hay atributos del mismo tipo que de la entidad padre
+							/*se genera validacion para ver si la entidad tiene un atributo lista de tu tipo 
+ 
+							 */
 							if(!parentElement.GetName().equalsIgnoreCase(attribute.GetType())){
-							
-								modelAttribute.setHasChildAttributes(true);
-													
-								IModel childModel = 
-										getElementDetail(element, allElementsMap);
+								String atribustoLista= attribute.GetType();
+								if(atribustoLista.indexOf("<") != -1 ){
+									log.debug( "Atributo Lista Ignorado: " + parentElement.GetName() + " - " +attribute.GetType());
+								}else{
+									modelAttribute.setHasChildAttributes(true);
+									
+									IModel childModel = 
+											getElementDetail(element, allElementsMap);
+									
+									modelAttribute.setChildModel(childModel);
 								
-								modelAttribute.setChildModel(childModel);
+								}
+							
 							
 							} else {
 								log.debug( "Atributo Ignorado: " + parentElement.GetName() + " - " +attribute.GetType());
