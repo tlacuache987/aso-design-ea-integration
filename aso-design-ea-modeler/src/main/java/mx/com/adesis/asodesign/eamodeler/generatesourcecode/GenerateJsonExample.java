@@ -184,7 +184,16 @@ public class GenerateJsonExample {
 							if(!parentElement.GetName().equalsIgnoreCase(attribute.GetType())){
 								String atribustoLista= attribute.GetType();
 								if(atribustoLista.indexOf("<") != -1 ){
-									log.debug( "Atributo Lista Ignorado: " + parentElement.GetName() + " - " +attribute.GetType());
+									log.debug( "Atributo Lista : " + parentElement.GetName() + " - " +attribute.GetType().substring(attribute.GetType().indexOf("<")+1, attribute.GetType().length()-1));
+									if(!parentElement.GetName().equalsIgnoreCase(attribute.GetType().substring(attribute.GetType().indexOf("<")+1, attribute.GetType().length()-1))){
+										modelAttribute.setHasChildAttributes(true);
+										
+										IModel childModel = 
+												getElementDetail(element, allElementsMap);
+										
+										modelAttribute.setChildModel(childModel);
+									}
+								
 								}else{
 									modelAttribute.setHasChildAttributes(true);
 									
