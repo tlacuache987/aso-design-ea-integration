@@ -1,0 +1,29 @@
+ $attribute.getName() :
+ 	(annotations.bindingDefinition):
+  		- method: "PATCH"
+ 		  input: "NONE"
+	      output: "OPTIONAL"
+	   - method: "GET"
+	     input: "NONE"
+	     output: "OPTIONAL"
+	   - method: \"POST"
+		 input: \"NONE"
+		 output: \"OPTIONAL"	
+	 #if( $attribute.isHasChildAttributes() == false )
+	    #if( $attribute.isHasChildAttributesList() == false )
+   type: $attribute.getSubtype()
+    	#end
+	 #else
+	    #if( $attribute.isHasChildAttributesList() == false )
+   type: object
+    	#end 
+	 #end
+	 #if($attribute.getStereotype() == "enum")
+  enum:  $attribute.allowedValues.toString() 
+	 #end
+	 description: $attribute.getDescription()
+	#if( $attribute.isHasChildAttributes() == true )
+	    #if( $attribute.isHasChildAttributesList() == false )
+     properties:	
+    	#end
+	 #end  	 

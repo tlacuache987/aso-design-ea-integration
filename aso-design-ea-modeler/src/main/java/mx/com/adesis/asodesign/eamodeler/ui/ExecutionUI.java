@@ -47,6 +47,7 @@ import mx.com.adesis.asodesign.eamodeler.execution.CreateEnumEntitiesSpreadsheet
 import mx.com.adesis.asodesign.eamodeler.execution.CreateEntityExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.CreateEntityMappingExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.CreateJsonExampleExecution;
+import mx.com.adesis.asodesign.eamodeler.execution.CreateEntityAsRaml1Execution;
 import mx.com.adesis.asodesign.eamodeler.execution.GenerateRAMLCodeExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.GetDuplicatedEntitiesExecution;
 import mx.com.adesis.asodesign.eamodeler.execution.IExecution;
@@ -273,6 +274,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		IExecution getDuplicatedEntitiesExecution = new GetDuplicatedEntitiesExecution();
 		IExecution getjsonExampleExecution = new CreateJsonExampleExecution();
 		IExecution generateRAMLCodeExecution = new GenerateRAMLCodeExecution();
+		IExecution generateEntityAsRAML1Execution = new CreateEntityAsRaml1Execution();
 		this.listSelectExampleModel.addElement( createEntityExecution );
 		this.listSelectExampleModel.addElement( newEntityMappingExample );
 		this.listSelectExampleModel.addElement( createAllEntitiesSpreadsheetExecution );
@@ -281,6 +283,7 @@ public class ExecutionUI extends JFrame implements ActionListener, ListSelection
 		this.listSelectExampleModel.addElement( getjsonExampleExecution );
 		this.listSelectExampleModel.addElement( generateRAMLCodeExecution );
 		this.listSelectExampleModel.addElement( createEnumEntitiesSpreadsheetExecution );
+		this.listSelectExampleModel.addElement(generateEntityAsRAML1Execution);
 	}
 	
 	/**
